@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Field — Opportunity Manager</title>
+<style>
+:root{--bg:#0A1628;--surf:#112236;--surf2:#1A3050;--bdr:rgba(255,255,255,0.08);--txt:#FFFFFF;--muted:#7A9AB5;--sec:#D8E8F0;--cyan:#00D4C8;--cdim:rgba(0,212,200,0.12);--grn:#22C55E;--amb:#F59E0B;--red:#EF4444;--r:10px;--rs:6px;}
+.lt{--bg:#F8FAFC;--surf:#FFFFFF;--surf2:#F1F5F9;--bdr:rgba(0,0,0,0.08);--txt:#0F172A;--muted:#64748B;--sec:#334155;--cyan:#0891B2;--cdim:rgba(8,145,178,0.08);--grn:#16A34A;--amb:#D97706;--red:#DC2626;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .2s,color .2s;}
+#app{max-width:960px;margin:0 auto;padding:16px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.logo{font-size:18px;font-weight:500;color:var(--cyan);}
+.logo span{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px;}
+.topbtns{display:flex;gap:8px;}
+.tbtn{cursor:pointer;background:var(--surf);border:0.5px solid var(--bdr);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--muted);}
+.tabs{display:flex;gap:2px;margin-bottom:16px;background:var(--surf);border-radius:var(--r);padding:3px;border:0.5px solid var(--bdr);}
+.tab{flex:1;text-align:center;padding:7px 6px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.tab.on{background:var(--cyan);color:#fff;}
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;}
+.lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+[contenteditable]{outline:none;background:transparent;cursor:text;font-family:inherit;}
+[contenteditable]:empty:before{content:attr(data-ph);color:var(--muted);opacity:0.4;pointer-events:none;}
+.t13{font-size:13px;color:var(--sec);line-height:1.4;}
+.drow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--bdr);}
+.drow:last-of-type{border-bottom:none;}
+.dot6{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;opacity:0.45;}
+.xbtn{opacity:0;cursor:pointer;font-size:10px;flex-shrink:0;background:none;border:none;font-family:inherit;transition:opacity .1s;}
+.drow:hover .xbtn,.ci:hover .xbtn{opacity:0.5;}
+.xbtn:hover{opacity:1!important;}
+.addlink{font-size:12px;color:var(--muted);cursor:pointer;padding:5px 0 1px;display:flex;align-items:center;gap:4px;opacity:0.55;background:none;border:none;font-family:inherit;}
+.addlink:hover{color:var(--cyan);opacity:1;}
+.stats3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+.stat{background:var(--surf2);border-radius:var(--rs);padding:10px 12px;}
+.stat-l{font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-v{font-size:18px;font-weight:500;}
+.stat-sm{font-size:13px;font-weight:400;line-height:1.4;}
+.conf{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.conf-lbl{font-size:12px;color:var(--muted);flex-shrink:0;}
+.conf-pct{font-size:12px;font-weight:500;color:var(--amb);width:32px;text-align:right;}
+input[type=range]{flex:1;accent-color:var(--amb);}
+.tl{display:flex;align-items:center;}
+.tli{flex:1;text-align:center;cursor:pointer;}
+.tli:hover .tld{opacity:.7;}
+.tld{width:10px;height:10px;border-radius:50%;margin:0 auto 4px;transition:all .15s;}
+.tld.dn{background:var(--grn);}
+.tld.ac{background:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,200,0.18);}
+.tld.fu{background:var(--surf2);border:1.5px solid var(--bdr);}
+.tll{flex:1;height:1.5px;background:var(--bdr);margin-bottom:14px;}
+.tll.dn{background:var(--grn);}
+.tl-lbl{font-size:9px;color:var(--muted);}
+.tl-lbl.dn{color:var(--grn);}
+.tl-lbl.ac{color:var(--cyan);font-weight:500;}
+.qi{padding:7px 0;border-bottom:0.5px solid var(--bdr);}
+.qi:last-child{border-bottom:none;}
+.qrow{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .15s;}
+.qlbl{font-size:13px;color:var(--sec);flex:1;}
+.qarr{font-size:10px;color:var(--muted);flex-shrink:0;opacity:0;}
+.qrow:hover .qarr{opacity:1;}
+.qnote{margin-top:5px;margin-left:16px;display:none;}
+.qnote.op{display:block;}
+.qni{font-size:12px;color:var(--muted);background:var(--surf2);border-radius:var(--rs);padding:7px 10px;outline:none;min-height:32px;line-height:1.5;}
+.qni:empty:before{content:attr(data-ph);opacity:0.4;}
+.ctx4{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ctxb{background:var(--surf2);border-radius:var(--rs);padding:10px 12px;}
+.ctxb-l{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;}
+.mapwrap{width:100%;background:var(--surf2);border-radius:var(--rs);overflow:hidden;user-select:none;}
+svg#ms{display:block;width:100%;}
+.mapleg{display:flex;gap:12px;margin-bottom:9px;font-size:11px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+.legi{display:flex;align-items:center;gap:5px;}
+.legdot{width:7px;height:7px;border-radius:50%;}
+.cc2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cc{background:var(--surf2);border-radius:var(--rs);padding:9px 11px;border:0.5px solid var(--bdr);}
+.crow{padding:5px 0;border-bottom:0.5px solid var(--bdr);display:flex;align-items:flex-start;gap:6px;}
+.crow:last-child{border-bottom:none;}
+.crow-l{font-size:10px;color:var(--muted);flex-shrink:0;width:44px;text-transform:uppercase;letter-spacing:.4px;padding-top:2px;}
+.cval{font-size:13px;color:var(--sec);flex:1;line-height:1.4;}
+.cval.bold{font-weight:500;color:var(--txt);}
+.sup-pill{font-size:11px;font-weight:500;cursor:pointer;border:none;font-family:inherit;background:transparent;padding:0;display:inline-flex;align-items:center;gap:4px;}
+.sup-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.alink{font-size:12px;color:var(--cyan);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;display:inline-flex;align-items:center;gap:4px;}
+.alink:hover{opacity:0.8;}
+.del-btn{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;}
+.del-btn:hover{color:var(--red);}
+.pb-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.pb{flex:1;height:4px;background:var(--surf2);border-radius:2px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:2px;background:var(--cyan);transition:width .3s;}
+.pb-lbl{font-size:12px;color:var(--cyan);font-weight:500;min-width:36px;text-align:right;}
+.grp{margin-bottom:4px;}
+.grp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;margin-top:14px;}
+.grp-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+.ci{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--bdr);}
+.ci:last-child{border-bottom:none;}
+.cbox{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--bdr);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.cbox.on{background:var(--cyan);border-color:var(--cyan);}
+.ci-text{flex:1;font-size:13px;color:var(--sec);line-height:1.4;}
+.ci-text.on{color:var(--muted);text-decoration:line-through;}
+.ri{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--bdr);align-items:flex-start;}
+.ri:last-child{border-bottom:none;}
+.rind{display:flex;flex-direction:column;align-items:center;gap:3px;width:30px;flex-shrink:0;padding-top:2px;}
+.rdot{width:7px;height:7px;border-radius:50%;}
+.rbody{flex:1;}
+.rtext{font-size:13px;color:var(--sec);line-height:1.5;}
+.rsrc{font-size:11px;color:var(--muted);margin-top:2px;}
+.add-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:0.5px solid var(--bdr);}
+.add-input{flex:1;font-size:13px;outline:none;background:transparent;padding:0;line-height:1.4;font-family:inherit;}
+.add-input:empty:before{content:'Describe the risk or blocker...';color:var(--muted);opacity:0.45;pointer-events:none;}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="logo">Field <span>opportunity manager</span></div>
+    <div class="topbtns">
+      <div class="tbtn" onclick="resetData()" style="color:var(--red);border-color:var(--red);opacity:0.7;">↺ Reset</div>
+      <div class="tbtn" onclick="toggleTheme()"><span id="tlbl">Light mode</span></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" onclick="show('deal')">Deal Overview</div>
+    <div class="tab" onclick="show('map')">Relationship Map</div>
+    <div class="tab" onclick="show('plan')">Close Plan</div>
+    <div class="tab" onclick="show('risk')">Risk Log</div>
+  </div>
+
+  <!-- DEAL OVERVIEW -->
+  <div id="tab-deal">
+    <div class="card">
+      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:5px;">
+        <div id="deal-name" style="font-size:19px;font-weight:500;" contenteditable="true">Teledyne FLIR</div>
+        <div id="deal-stage-badge" style="font-size:11px;padding:2px 9px;border-radius:20px;background:var(--cdim);color:var(--cyan);font-weight:500;" contenteditable="true">Active Eval</div>
+      </div>
+      <div id="deal-sub" style="font-size:12px;color:var(--muted);margin-bottom:11px;" contenteditable="true">Thermal Imaging &amp; Sensing · Enterprise · Josh W.</div>
+      <div class="stats3">
+        <div class="stat"><div class="stat-l">ARR</div><div id="deal-arr" class="stat-v" style="color:var(--cyan);" contenteditable="true">$280K</div></div>
+        <div class="stat"><div class="stat-l">Services</div><div id="deal-services" class="stat-v" contenteditable="true">$65K</div></div>
+        <div class="stat"><div class="stat-l">Close date</div><div id="deal-close" class="stat-v" style="color:var(--amb);" contenteditable="true">Jul 10–11</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+        <div class="stat"><div class="stat-l">Last step</div><div id="deal-last" class="stat-sm" style="color:var(--sec);" contenteditable="true">Call 3 — pricing + implementation overview with Sarah</div></div>
+        <div class="stat"><div class="stat-l">Next step</div><div id="deal-next" class="stat-sm" style="color:var(--amb);" contenteditable="true">Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST</div></div>
+      </div>
+      <div class="conf">
+        <span class="conf-lbl">Confidence</span>
+        <input id="conf-range" type="range" min="0" max="100" value="35" oninput="document.getElementById('cpct').textContent=this.value+'%';save()"/>
+        <span id="cpct" class="conf-pct">35%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="lbl">Deal progress — click a stage to set</div>
+      <div class="tl" id="tl"></div>
+    </div>
+    <div class="row2">
+      <div class="card" style="margin-bottom:0;">
+        <div class="lbl">Qualification — dot cycles status · label opens note</div>
+        <div id="qual"></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="lbl">Deliverable outcomes</div>
+        <div id="outs"></div>
+        <button class="addlink" onclick="addOut()">+ Add</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="lbl">Context map</div>
+      <div class="ctx4" id="ctx"></div>
+    </div>
+  </div>
+
+  <!-- RELATIONSHIP MAP -->
+  <div id="tab-map" class="hidden">
+    <div class="card">
+      <div class="lbl">Relationship map</div>
+      <div class="mapleg">
+        <span>Support:</span>
+        <div class="legi"><div class="legdot" style="background:var(--grn);"></div><span>For us</span></div>
+        <div class="legi"><div class="legdot" style="background:var(--amb);"></div><span>Neutral</span></div>
+        <div class="legi"><div class="legdot" style="background:var(--red);"></div><span>Against us</span></div>
+        <span style="margin-left:4px;">— — influence</span>
+      </div>
+      <div class="mapwrap"><svg id="ms" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div style="margin-top:7px;font-size:11px;color:var(--muted);">Drop onto a contact to set as their manager · Drop onto empty space to make standalone</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="lbl" style="margin-bottom:0;">Contact details</div>
+        <button class="alink" onclick="addContact()">+ Add contact</button>
+      </div>
+      <div class="cc2" id="ccs"></div>
+    </div>
+  </div>
+
+  <!-- CLOSE PLAN -->
+  <div id="tab-plan" class="hidden">
+    <div class="card">
+      <div class="lbl">Close plan — Teledyne FLIR</div>
+      <div class="pb-row"><div class="pb"><div class="pb-fill" id="pbf"></div></div><span class="pb-lbl" id="pbl"></span></div>
+      <div id="cl"></div>
+    </div>
+  </div>
+
+  <!-- RISK LOG -->
+  <div id="tab-risk" class="hidden">
+    <div class="card">
+      <div class="lbl">Deal risks — click severity to cycle · click ✕ to remove</div>
+      <div id="rl"></div>
+      <div class="add-row">
+        <div class="add-input" contenteditable="true" id="ri"></div>
+        <div id="pills" style="display:flex;gap:4px;"></div>
+        <button id="add-btn" onclick="addRisk()" style="font-size:12px;padding:5px 11px;border-radius:6px;cursor:pointer;font-weight:500;font-family:inherit;border:none;transition:all .15s;">Add</button>
+      </div>
+      <button id="ask-btn" style="font-size:12px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;display:inline-flex;align-items:center;gap:4px;margin-top:11px;">↗ Ask Field to review my risks</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE='field_teledyne_v1';
+let isLt=false;
+function fg(){return isLt?'#0F172A':'#FFFFFF';}
+function cyan(){return isLt?'#0891B2':'#00D4C8';}
+function cyandim(){return isLt?'rgba(8,145,178,0.08)':'rgba(0,212,200,0.12)';}
+
+// ── DEFAULT DATA ──
+const DEFAULTS = {
+  curStage: 3,
+  isLt: false,
+  dealName: 'Teledyne FLIR',
+  dealBadge: 'Active Eval',
+  dealSub: 'Thermal Imaging & Sensing · Enterprise · Josh W.',
+  dealArr: '$280K',
+  dealServices: '$65K',
+  dealClose: 'Jul 10–11',
+  dealLast: 'Call 3 — pricing + implementation overview with Sarah',
+  dealNext: 'Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST',
+  dealConf: 35,
+  qd: [
+    {l:'Pain identified',s:'green',n:'They have no visibility today into data center builds. Huge opportunity for first mover advantage + Cross product selling.',o:false},
+    {l:'Champion confirmed',s:'green',n:'Sarah Wilson, AIS Marketing Director EMEA. Internal champion — owns 5 verticals, directly owns Security + Science. Motivated and engaged.',o:false},
+    {l:'Economic buyer engaged',s:'amber',n:"Sarah does NOT have budget authority at $280K–$340K. Needs to escalate. Kyle McKinney (VP Sales, US) is the critical unlock — call scheduled Jul 10/11. Joseph Rocchio (Dir of Strategic Initiatives) also needs to be involved.",o:false},
+    {l:'Decision process mapped',s:'amber',n:'Sequence emerging: Sarah → Kyle buy-in → Joseph Rocchio (marketing-side approver) → budget approval. IT budget path worth exploring — could bypass marketing budget approval if framed as technology investment.',o:false},
+    {l:'Metrics agreed',s:'red',n:'No metrics confirmed yet. Metrics request sent to Sarah — she is getting numbers from David. Need: pipeline target for data centers, current pipeline, active opps, account TAM, RFP vol/year, win rate when engaged pre avg deal size, avg TCV, avg sales cycle.',o:false},
+    {l:'Close plan aligned',s:'red',n:"No mutual close plan yet. Kyle call is next milestone. Ryan's view: this is not a Q2 closeable deal.",o:false},
+  ],
+  outs: [
+    'Generate pipeline Data Center Vertical.',
+    'Stop losing RFPs to competitors already on the shortlist',
+    'Give 5 distinct BU verticals a shared signal layer — one marketing director, one view',
+    'Intent data continues informing the deal after first meeting (not just pre-outreach)',
+    'Expand to full 70-license scope across other verticals once data center proves out'
+  ],
+  CTX: {
+    Goals: [
+      'Get on the shortlist before RFPs are written — data center vertical first',
+      'Prove out 6sense in data centers, then expand to all 5 AIS verticals',
+      'Give sales reps data-driven prioritization instead of gut-based targeting',
+      'Absorb 2 recent acquisitions (TransponderTech, DD-Scientific) into EMEA GTM motion'
+    ],
+    Pressures: [
+      'ABM has been discussed 3–4 years internally with zero action — credibility risk for Sarah',
+      '$340K is a "scary figure" — Sarah does not have budget authority at this level',
+      'Parent company (Teledyne) posted record Q4 2025 net sales $1.61B — growth expectations are high',
+      'Kyle McKinney needs to be bought in before budget can move'
+    ],
+    Initiatives: [
+      'Data center vertical = Phase 1 tester (scoped to ~10 sellers, ~$280K)',
+      'Power BI flat file integration confirmed by Emily Lane — no hard Marketo dependency',
+      'Technology budget path being explored — could bypass marketing budget approval',
+      '36-month deal term target — 1.5x multiplier = $420K commission-equivalent for Josh'
+    ],
+    Obstacles: [
+      'Sarah lacks budget authority — $280K–$340K requires escalation above her',
+      'Kyle McKinney not yet engaged — critical to close before this can move',
+      'Joseph Rocchio (Dir of Strategic Initiatives) also needs to approve — role not fully clear',
+      "No metrics yet — ROI model can't be built without data from David",
+      'Prior ABM initiative stalled once already (Sarah on maternity leave)'
+    ]
+  },
+  cs: [
+    {id:'c1',name:'Joseph Rocchio',title:'Dir of Strategic Initiatives',role:'Economic Buyer',sup:'amber',notes:"Marketing-side approver. Sarah wasn't fully clear on his exact role — needs to be involved in the decision. Sequence: Kyle first, then Joseph.",parent:null,x:0,y:0},
+    {id:'c2',name:'Sarah Wilson',title:'AIS Marketing Director, EMEA',role:'Champion',sup:'green',notes:'Internal champion. Directly owns Security + Science verticals across 5 AIS verticals. Does NOT have budget authority at $280K–$340K. Needs to escalate to Kyle and Joseph.',parent:'c1',x:0,y:0},
+    {id:'c3',name:'Kyle McKinney',title:'VP Sales, US',role:'Decision Maker',sup:'amber',notes:"Critical unlock. Marketing-savvy, straight shooter. Ryan's framing: compare 6sense vs. doing nothing / doing it manually. Frame: what does ABM look like without 6sense? Call scheduled Jul 10/11 3PM UK / 6AM PST.",parent:'c1',x:0,y:0},
+    {id:'c4',name:'David',title:'Metrics Contact (via Sarah)',role:'Influencer',sup:'amber',notes:'Referenced by Sarah as the contact who can provide the metrics Josh needs for the ROI model. Sarah to route metrics request through David.',parent:'c3',x:0,y:0},
+  ],
+  uid: 10,
+  standalonePos: {},
+  CL: [
+    {g:'Qualify',items:[
+      {t:'Pain formally identified and documented — ABM for data centers',d:true},
+      {t:'Champion confirmed and engaged — Sarah Wilson',d:true},
+      {t:'Revised quote at 10 licenses + monthly breakdown sent to Sarah',d:true},
+      {t:'Metrics request sent to Sarah → David',d:true},
+      {t:'Technical integration confirmed (Power BI flat file via Emily Lane)',d:true},
+      {t:'Economic buyer identified — Kyle McKinney + Joseph Rocchio',d:true},
+      {t:'Economic buyer directly engaged — Kyle call confirmed',d:false},
+    ]},
+    {g:'Validate',items:[
+      {t:'Receive metrics from Sarah / David (pipeline target, win rate, ADS, TCV, RFP volume)',d:false},
+      {t:'Build ROI model from actual data center numbers before Kyle call',d:false},
+      {t:'Kyle McKinney call completed — Jul 10/11',d:false},
+      {t:'Joseph Rocchio engaged',d:false},
+      {t:'Business case / ROI model shared and agreed',d:false},
+      {t:'Scope confirmed — data center only (10 sellers) vs. full 70-license',d:false},
+      {t:'Explore IT budget path as alternative to marketing budget',d:false},
+    ]},
+    {g:'Close',items:[
+      {t:'Mutual close plan agreed with Sarah + Kyle',d:false},
+      {t:'Pricing finalized — verify Salesforce tier classification before generating quote',d:false},
+      {t:'Legal / procurement engaged',d:false},
+      {t:'36-month term confirmed (1.5x multiplier)',d:false},
+    ]},
+  ],
+  risks: [
+    {t:"Prior ABM initiative stalled once already while Sarah was on maternity leave. Organizational inertia is real — 3–4 years of internal discussion with zero action.",l:'med',s:'Discovery · Sarah context'},
+    {t:"No metrics yet — can't build a credible ROI model without pipeline target, win rate, ADS, and TCV from David. ROI model must be ready before Kyle call.",l:'high',s:'Internal assessment'},
+    {t:"Pricing reaction from Sarah: $340K was 'a scary figure, a lot higher than expected.' Price sensitivity is real. Scoped down to $280K (10 sellers / data center only) but still large for Sarah to approve solo.",l:'med',s:'Call 3 · Jun 23'},
+    {t:"Not wide enough and dont understand buying process internally. Need to map key contacts, and an understanding of how exactly we get there.",l:'high',s:'Added manually · 6/24/2026'},
+  ],
+  selLvlV: 'high'
+};
+
+// ── STATE (loaded from defaults, overridden by localStorage) ──
+let curStage, qd, outs, CTX, cs, uid, standalonePos, CL, risks, selLvlV;
+
+function loadDefaults(){
+  curStage = DEFAULTS.curStage;
+  isLt = DEFAULTS.isLt;
+  qd = JSON.parse(JSON.stringify(DEFAULTS.qd));
+  outs = [...DEFAULTS.outs];
+  CTX = JSON.parse(JSON.stringify(DEFAULTS.CTX));
+  cs = JSON.parse(JSON.stringify(DEFAULTS.cs));
+  uid = DEFAULTS.uid;
+  standalonePos = {};
+  CL = JSON.parse(JSON.stringify(DEFAULTS.CL));
+  risks = JSON.parse(JSON.stringify(DEFAULTS.risks));
+  selLvlV = DEFAULTS.selLvlV;
+  // reset header fields
+  setField('deal-name', DEFAULTS.dealName);
+  setField('deal-stage-badge', DEFAULTS.dealBadge);
+  setField('deal-sub', DEFAULTS.dealSub);
+  setField('deal-arr', DEFAULTS.dealArr);
+  setField('deal-services', DEFAULTS.dealServices);
+  setField('deal-close', DEFAULTS.dealClose);
+  setField('deal-last', DEFAULTS.dealLast);
+  setField('deal-next', DEFAULTS.dealNext);
+  const cr = document.getElementById('conf-range');
+  if(cr) cr.value = DEFAULTS.dealConf;
+  document.getElementById('cpct').textContent = DEFAULTS.dealConf + '%';
+  document.body.classList.toggle('lt', isLt);
+  document.getElementById('tlbl').textContent = isLt ? 'Dark mode' : 'Light mode';
+}
+
+function setField(id, val){
+  const el = document.getElementById(id);
+  if(el) el.textContent = val;
+}
+
+function save(){
+  try{
+    localStorage.setItem(STORE, JSON.stringify({
+      curStage, isLt,
+      dealName: document.getElementById('deal-name')?.textContent,
+      dealBadge: document.getElementById('deal-stage-badge')?.textContent,
+      dealSub: document.getElementById('deal-sub')?.textContent,
+      dealArr: document.getElementById('deal-arr')?.textContent,
+      dealServices: document.getElementById('deal-services')?.textContent,
+      dealClose: document.getElementById('deal-close')?.textContent,
+      dealLast: document.getElementById('deal-last')?.textContent,
+      dealNext: document.getElementById('deal-next')?.textContent,
+      dealConf: document.getElementById('conf-range')?.value,
+      qd, outs, CTX, cs, uid, standalonePos, CL, risks, selLvlV
+    }));
+  }catch(e){}
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    // only load if data looks valid
+    if(!d.qd || !d.CL || !d.risks) return false;
+    curStage = d.curStage ?? DEFAULTS.curStage;
+    isLt = d.isLt ?? false;
+    if(d.qd) qd = d.qd;
+    if(d.outs) outs = d.outs;
+    if(d.CTX) CTX = d.CTX;
+    if(d.cs) cs = d.cs;
+    if(d.uid) uid = d.uid;
+    if(d.standalonePos) standalonePos = d.standalonePos;
+    if(d.CL) CL = d.CL;
+    if(d.risks) risks = d.risks;
+    if(d.selLvlV) selLvlV = d.selLvlV;
+    if(d.dealName) setField('deal-name', d.dealName);
+    if(d.dealBadge) setField('deal-stage-badge', d.dealBadge);
+    if(d.dealSub) setField('deal-sub', d.dealSub);
+    if(d.dealArr) setField('deal-arr', d.dealArr);
+    if(d.dealServices) setField('deal-services', d.dealServices);
+    if(d.dealClose) setField('deal-close', d.dealClose);
+    if(d.dealLast) setField('deal-last', d.dealLast);
+    if(d.dealNext) setField('deal-next', d.dealNext);
+    if(d.dealConf != null){
+      const cr = document.getElementById('conf-range');
+      if(cr) cr.value = d.dealConf;
+      document.getElementById('cpct').textContent = d.dealConf + '%';
+    }
+    document.body.classList.toggle('lt', isLt);
+    document.getElementById('tlbl').textContent = isLt ? 'Dark mode' : 'Light mode';
+    return true;
+  }catch(e){ return false; }
+}
+
+function resetData(){
+  if(!confirm('Reset all data to defaults? This cannot be undone.')) return;
+  localStorage.removeItem(STORE);
+  loadDefaults();
+  buildAll();
+}
+
+// ── TABS ──
+function show(name){
+  ['deal','map','plan','risk'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden',t!==name));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['deal','map','plan','risk'][i]===name));
+  if(name==='map') drawMap();
+}
+
+// ── TIMELINE ──
+const STAGES=['Prospect','Discovery','Demo','Eval','Proposal','Close'];
+function buildTL(){
+  let h='';
+  STAGES.forEach((s,i)=>{
+    const st=i<curStage?'dn':i===curStage?'ac':'fu';
+    h+=`<div class="tli" onclick="setS(${i})"><div class="tld ${st}"></div><div class="tl-lbl ${st}">${s}</div></div>`;
+    if(i<STAGES.length-1) h+=`<div class="tll ${i<curStage?'dn':''}"></div>`;
+  });
+  document.getElementById('tl').innerHTML=h;
+}
+function setS(i){curStage=i;buildTL();save();}
+
+// ── QUAL ──
+const SCYC=['green','amber','red'];
+const SCOL={green:'var(--grn)',amber:'var(--amb)',red:'var(--red)'};
+function buildQual(){
+  document.getElementById('qual').innerHTML=qd.map((q,i)=>`
+    <div class="qi">
+      <div class="qrow">
+        <div class="sdot" style="background:${SCOL[q.s]};cursor:pointer;" onclick="qCyc(${i})"></div>
+        <div class="qlbl" onclick="qTog(${i})">${q.l}</div>
+        <div class="qarr" onclick="qTog(${i})">${q.o?'▲':'▼'}</div>
+      </div>
+      <div class="qnote ${q.o?'op':''}">
+        <div class="qni" contenteditable="true" data-ph="Add note — evidence or context" onblur="qd[${i}].n=this.textContent.trim();save()">${q.n}</div>
+      </div>
+    </div>`).join('');
+}
+function qCyc(i){const c=SCYC.indexOf(qd[i].s);qd[i].s=SCYC[(c+1)%3];buildQual();save();}
+function qTog(i){qd[i].o=!qd[i].o;buildQual();save();}
+
+// ── OUTCOMES ──
+function buildOuts(){
+  document.getElementById('outs').innerHTML=outs.map((o,i)=>`
+    <div class="drow">
+      <span style="font-size:12px;color:var(--muted);flex-shrink:0;width:14px;">${i+1}.</span>
+      <span class="t13" contenteditable="true" style="flex:1;" onblur="outs[${i}]=this.textContent.trim();save()">${o}</span>
+      <button class="xbtn" style="color:${fg()};" onclick="outs.splice(${i},1);buildOuts();save();">✕</button>
+    </div>`).join('');
+}
+function addOut(){outs.push('');buildOuts();save();const s=document.querySelectorAll('#outs .t13');if(s.length)s[s.length-1].focus();}
+
+// ── CONTEXT MAP ──
+function buildCtx(){
+  document.getElementById('ctx').innerHTML=Object.entries(CTX).map(([lbl,items])=>`
+    <div class="ctxb">
+      <div class="ctxb-l">${lbl}</div>
+      <div id="cr-${lbl}">
+        ${items.map((v,i)=>`
+          <div class="drow">
+            <div class="dot6"></div>
+            <span class="t13" contenteditable="true" style="flex:1;" onblur="CTX['${lbl}'][${i}]=this.textContent.trim();save()">${v}</span>
+            <button class="xbtn" style="color:${fg()};" onclick="CTX['${lbl}'].splice(${i},1);buildCtx();save();">✕</button>
+          </div>`).join('')}
+      </div>
+      <button class="addlink" onclick="ctxAdd('${lbl}')">+ Add</button>
+    </div>`).join('');
+}
+function ctxAdd(l){CTX[l].push('');buildCtx();save();const r=document.getElementById('cr-'+l);if(r){const s=r.querySelectorAll('.t13');if(s.length)s[s.length-1].focus();}}
+
+// ── RELATIONSHIP MAP ──
+const SM={green:'#22C55E',amber:'#F59E0B',red:'#EF4444'};
+const SL={green:'For us',amber:'Neutral',red:'Against us'};
+const SCYC2=['green','amber','red'];
+const ROLES=['Champion','Economic Buyer','Decision Maker','Evaluator','Influencer','Blocker'];
+const NW=130,NH=58,HGAP=22,VGAP=82;
+let SVG_W=640,SVG_H=360;
+let dragId=null,dropTarget=null,dragOffX=0,dragOffY=0,svgEl=null;
+
+function children(id){return cs.filter(c=>c.parent===id);}
+function subtreeW(id){const kids=children(id);if(!kids.length)return NW;return Math.max(NW,kids.reduce((s,k)=>s+subtreeW(k.id),0)+(kids.length-1)*HGAP);}
+function placeTree(id,left,depth){
+  const c=cs.find(x=>x.id===id),kids=children(id);
+  c.y=50+depth*(NH+VGAP);
+  if(!kids.length){c.x=left+NW/2;return;}
+  let cur=left;kids.forEach(k=>{placeTree(k.id,cur,depth+1);cur+=subtreeW(k.id)+HGAP;});
+  const f=cs.find(x=>x.id===kids[0].id),l=cs.find(x=>x.id===kids[kids.length-1].id);
+  c.x=(f.x+l.x)/2;
+}
+function layout(){
+  const treeRoots=cs.filter(c=>c.parent===null&&children(c.id).length>0);
+  const standalone=cs.filter(c=>c.parent===null&&children(c.id).length===0);
+  const totalTW=treeRoots.reduce((s,r)=>s+subtreeW(r.id),0)+(treeRoots.length-1)*HGAP*2;
+  let cur=(SVG_W-totalTW)/2;
+  treeRoots.forEach(r=>{placeTree(r.id,cur,0);cur+=subtreeW(r.id)+HGAP*2;});
+  let maxTreeY=treeRoots.length?Math.max(...cs.filter(c=>c.parent!==null||children(c.id).length>0).map(c=>c.y))+NH:0;
+  const saY=Math.max(maxTreeY+VGAP,80);
+  const saW=standalone.length*NW+(standalone.length-1)*HGAP*1.5;
+  let saX=(SVG_W-saW)/2;
+  standalone.forEach(c=>{
+    if(standalonePos[c.id]){c.x=standalonePos[c.id].x;c.y=standalonePos[c.id].y;}
+    else{c.x=saX+NW/2;c.y=saY;saX+=NW+HGAP*1.5;}
+  });
+  SVG_H=Math.max(...cs.map(c=>c.y))+NH+40;
+}
+function getSVGCoords(e){const r=svgEl.getBoundingClientRect();return{x:(e.clientX-r.left)*(SVG_W/r.width),y:(e.clientY-r.top)*(SVG_H/r.height)};}
+function renderMap(ghostId,ghostX,ghostY,dropT){
+  const dk=!document.body.classList.contains('lt');
+  const tc=dk?'#D8E8F0':'#1E293B',mc=dk?'#7A9AB5':'#64748B',bg=dk?'#1A3050':'#F1F5F9';
+  let h=`<defs><marker id="ar" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${mc}" opacity="0.45"/></marker></defs>`;
+  cs.forEach(c=>{
+    if(!c.parent)return;
+    const p=cs.find(x=>x.id===c.parent);if(!p)return;
+    const cx=c.id===ghostId?ghostX:c.x,cy=c.id===ghostId?ghostY:c.y;
+    const px=p.id===ghostId?ghostX:p.x,py=p.id===ghostId?ghostY:p.y;
+    const dx=cx-px,dy=cy-py,len=Math.hypot(dx,dy);if(len<2)return;
+    const nx=dx/len,ny=dy/len;
+    h+=`<line x1="${px+nx*(NW/2+2)}" y1="${py+ny*(NH/2+2)}" x2="${cx-nx*(NW/2+8)}" y2="${cy-ny*(NH/2+8)}" stroke="${mc}" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.45" marker-end="url(#ar)"/>`;
+  });
+  cs.forEach(c=>{
+    const isG=c.id===ghostId,isDT=dropT&&dropT===c.id;
+    const cx=isG?ghostX:c.x,cy=isG?ghostY:c.y,sc=SM[c.sup];
+    const isSA=c.parent===null&&children(c.id).length===0;
+    const ring=isSA&&!isG?`<rect x="${cx-NW/2-2}" y="${cy-NH/2-2}" width="${NW+4}" height="${NH+4}" rx="10" fill="none" stroke="${mc}" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.35"/>`:'';
+    h+=`<g class="mn" data-id="${c.id}" style="cursor:grab;" opacity="${isG?0.6:1}">
+      ${ring}
+      <rect x="${cx-NW/2}" y="${cy-NH/2}" width="${NW}" height="${NH}" rx="8" fill="${bg}" stroke="${isDT?'#00D4C8':sc}" stroke-width="${isDT?2.5:1.5}" stroke-opacity="0.85"/>
+      <circle cx="${cx+NW/2-9}" cy="${cy-NH/2+9}" r="5" fill="${sc}"/>
+      <text x="${cx}" y="${cy-8}" text-anchor="middle" font-size="12" font-weight="500" fill="${tc}" font-family="system-ui,sans-serif">${c.name}</text>
+      <text x="${cx}" y="${cy+7}" text-anchor="middle" font-size="10" fill="${mc}" font-family="system-ui,sans-serif">${c.title}</text>
+      <text x="${cx}" y="${cy+21}" text-anchor="middle" font-size="9" fill="${sc}" font-family="system-ui,sans-serif" font-weight="500">${c.role}</text>
+    </g>`;
+  });
+  svgEl.innerHTML=h;
+  svgEl.querySelectorAll('.mn').forEach(n=>{
+    n.addEventListener('mousedown',e=>{dragId=n.dataset.id;const cc=cs.find(x=>x.id===dragId);const pos=getSVGCoords(e);dragOffX=pos.x-cc.x;dragOffY=pos.y-cc.y;e.preventDefault();});
+  });
+}
+function drawMap(){
+  svgEl=document.getElementById('ms');
+  const r=svgEl.getBoundingClientRect();
+  SVG_W=r.width>0?Math.round(r.width):640;
+  layout();
+  svgEl.setAttribute('viewBox',`0 0 ${SVG_W} ${SVG_H}`);
+  renderMap(null,0,0,null);
+  buildCCs();
+}
+document.addEventListener('mousemove',e=>{
+  if(!dragId||!svgEl)return;
+  const pos=getSVGCoords(e);
+  const gx=Math.max(NW/2,Math.min(SVG_W-NW/2,pos.x-dragOffX));
+  const gy=Math.max(NH/2,Math.min(SVG_H-NH/2,pos.y-dragOffY));
+  let near=null,nd=9999;
+  cs.forEach(x=>{if(x.id===dragId)return;const d=Math.hypot(x.x-gx,x.y-gy);if(d<nd){nd=d;near=x.id;}});
+  dropTarget=nd<85?near:null;
+  svgEl.setAttribute('viewBox',`0 0 ${SVG_W} ${SVG_H}`);
+  renderMap(dragId,gx,gy,dropTarget);
+});
+document.addEventListener('mouseup',e=>{
+  if(!dragId)return;
+  const pos=getSVGCoords(e);
+  const gx=Math.max(NW/2,Math.min(SVG_W-NW/2,pos.x-dragOffX));
+  const gy=Math.max(NH/2,Math.min(SVG_H-NH/2,pos.y-dragOffY));
+  const dragged=cs.find(x=>x.id===dragId);
+  if(dropTarget){
+    function isDesc(anc,desc){if(desc===anc)return true;return children(anc).some(k=>isDesc(k.id,desc));}
+    if(!isDesc(dragId,dropTarget)){dragged.parent=dropTarget;delete standalonePos[dragId];}
+  } else {
+    dragged.parent=null;standalonePos[dragId]={x:gx,y:gy};dragged.x=gx;dragged.y=gy;
+  }
+  dragId=null;dropTarget=null;drawMap();save();
+});
+function addContact(){
+  const id='c'+(uid++);
+  cs.push({id,name:'New Contact',title:'Title',role:'Evaluator',sup:'amber',notes:'',parent:null,x:SVG_W*0.75,y:60});
+  standalonePos[id]={x:SVG_W*0.75,y:60};drawMap();save();
+}
+function deleteContact(id){cs=cs.filter(c=>c.id!==id);cs.forEach(c=>{if(c.parent===id)c.parent=null;});delete standalonePos[id];drawMap();save();}
+function makeStandalone(ci){const c=cs[ci];c.parent=null;standalonePos[c.id]={x:c.x,y:c.y};drawMap();save();}
+function buildCCs(){
+  document.getElementById('ccs').innerHTML=cs.map((c,ci)=>{
+    const sc=SM[c.sup],parentName=c.parent?cs.find(x=>x.id===c.parent)?.name:'—';
+    const isSA=c.parent===null&&children(c.id).length===0;
+    return `<div class="cc">
+      <div class="crow"><span class="crow-l">Name</span><span class="cval bold" contenteditable="true" onblur="cs[${ci}].name=this.textContent.trim();buildCCs();save();">${c.name}</span></div>
+      <div class="crow"><span class="crow-l">Title</span><span class="cval" contenteditable="true" onblur="cs[${ci}].title=this.textContent.trim();drawMap();save();">${c.title}</span></div>
+      <div class="crow"><span class="crow-l">Role</span><span class="cval" style="color:var(--muted);">${c.role}<span style="font-size:10px;color:var(--cyan);cursor:pointer;margin-left:6px;" onclick="cycleRole(${ci})">change</span></span></div>
+      <div class="crow"><span class="crow-l">Support</span>
+        <button class="sup-pill" onclick="cycleSup(${ci})"><span class="sup-dot" style="background:${sc};"></span><span style="font-size:13px;color:${sc};">${SL[c.sup]}</span></button>
+      </div>
+      <div class="crow"><span class="crow-l">Reports</span>
+        <span style="font-size:12px;color:var(--muted);">${isSA?'Standalone':c.parent?'to '+parentName:'Root'}
+        ${c.parent?`<span style="font-size:10px;color:var(--cyan);cursor:pointer;margin-left:6px;" onclick="makeStandalone(${ci})">make standalone</span>`:''}
+        </span>
+      </div>
+      <div class="crow" style="align-items:flex-start;"><span class="crow-l">Notes</span><span class="cval" contenteditable="true" style="white-space:pre-wrap;" onblur="cs[${ci}].notes=this.textContent.trim();save();">${c.notes}</span></div>
+      <div class="crow"><span class="crow-l"></span><button class="del-btn" onclick="deleteContact('${c.id}')">✕ Remove</button></div>
+    </div>`;
+  }).join('');
+}
+function cycleRole(ci){const c=ROLES.indexOf(cs[ci].role);cs[ci].role=ROLES[(c+1)%ROLES.length];buildCCs();save();}
+function cycleSup(ci){const c=SCYC2.indexOf(cs[ci].sup);cs[ci].sup=SCYC2[(c+1)%SCYC2.length];buildCCs();drawMap();save();}
+
+// ── CLOSE PLAN ──
+function buildCL(){
+  const f=fg();
+  document.getElementById('cl').innerHTML=CL.map((g,gi)=>`
+    <div class="grp">
+      <div class="grp-hdr">
+        <span class="grp-lbl">${g.g}</span>
+        <button onclick="addItem(${gi})" style="font-size:11px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;font-weight:500;color:${f};" onmouseover="this.style.color=cyan()" onmouseout="this.style.color='${f}'">+ Add item</button>
+      </div>
+      ${g.items.map((it,ii)=>`
+        <div class="ci">
+          <div class="cbox ${it.d?'on':''}" onclick="tog(${gi},${ii})">${it.d?'<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>':''}</div>
+          <span class="ci-text ${it.d?'on':''}" contenteditable="true" onblur="CL[${gi}].items[${ii}].t=this.textContent.trim();save()">${it.t}</span>
+          <button class="xbtn" style="color:${f};" onclick="rem(${gi},${ii})">✕</button>
+        </div>`).join('')}
+    </div>`).join('');
+  const all=CL.flatMap(g=>g.items),done=all.filter(i=>i.d).length;
+  document.getElementById('pbf').style.width=Math.round(done/all.length*100)+'%';
+  document.getElementById('pbl').textContent=`${done} / ${all.length}`;
+}
+function tog(gi,ii){CL[gi].items[ii].d=!CL[gi].items[ii].d;buildCL();save();}
+function rem(gi,ii){CL[gi].items.splice(ii,1);buildCL();save();}
+function addItem(gi){CL[gi].items.push({t:'',d:false});buildCL();save();const s=document.querySelectorAll('.ci-text');if(s.length)s[s.length-1].focus();}
+
+// ── RISK LOG ──
+const LVLS=['high','med','low'];
+const RC={high:'#EF4444',med:'#F59E0B',low:'#22C55E'};
+const RL={high:'High',med:'Med',low:'Low'};
+function buildRiskAll(){buildRisks();buildPills();buildRiskStatic();}
+function buildRisks(){
+  const f=fg();
+  document.getElementById('rl').innerHTML=risks.map((r,i)=>`
+    <div class="ri">
+      <div class="rind"><div class="rdot" style="background:${RC[r.l]};"></div>
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:${RC[r.l]};cursor:pointer;user-select:none;" onclick="cycleRisk(${i})">${RL[r.l]}</div>
+      </div>
+      <div class="rbody"><div class="rtext">${r.t}</div><div class="rsrc">${r.s}</div></div>
+      <button onclick="remRisk(${i})" style="color:${f};opacity:0.6;cursor:pointer;font-size:11px;flex-shrink:0;background:none;border:none;font-family:inherit;padding-top:2px;" onmouseover="this.style.opacity='1';this.style.color='#EF4444'" onmouseout="this.style.opacity='0.6';this.style.color='${f}'">✕</button>
+    </div>`).join('');
+  document.getElementById('ri').style.color=fg();
+}
+function buildPills(){
+  const f=fg();
+  document.getElementById('pills').innerHTML=LVLS.map(v=>{
+    const isSel=v===selLvlV,col=isSel?RC[v]:f,bg=isSel?RC[v]+'22':'transparent';
+    const border=isSel?RC[v]:(isLt?'rgba(0,0,0,0.15)':'rgba(255,255,255,0.15)');
+    return `<button onclick="selLvl('${v}')" style="font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-weight:500;font-family:inherit;background:${bg};color:${col};border:0.5px solid ${border};transition:all .15s;">${RL[v]}</button>`;
+  }).join('');
+}
+function buildRiskStatic(){
+  const c=cyan(),cd=cyandim();
+  const ab=document.getElementById('add-btn');
+  if(ab){ab.style.background=cd;ab.style.color=c;ab.style.border=`0.5px solid ${c}`;}
+  const ask=document.getElementById('ask-btn');
+  if(ask) ask.style.color=c;
+}
+function cycleRisk(i){const cur=LVLS.indexOf(risks[i].l);risks[i].l=LVLS[(cur+1)%LVLS.length];buildRiskAll();save();}
+function remRisk(i){risks.splice(i,1);buildRiskAll();save();}
+function selLvl(v){selLvlV=v;buildRiskAll();save();}
+function addRisk(){
+  const el=document.getElementById('ri'),txt=el.textContent.trim();if(!txt)return;
+  risks.push({t:txt,l:selLvlV,s:'Added manually · '+new Date().toLocaleDateString()});
+  el.textContent='';buildRiskAll();save();
+}
+document.getElementById('ri').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addRisk();}});
+
+// ── THEME ──
+function toggleTheme(){
+  isLt=!isLt;
+  document.body.classList.toggle('lt',isLt);
+  document.getElementById('tlbl').textContent=isLt?'Dark mode':'Light mode';
+  buildRiskAll();buildCL();buildCtx();buildOuts();
+  if(!document.getElementById('tab-map').classList.contains('hidden'))drawMap();
+  save();
+}
+
+// ── BUILD ALL ──
+function buildAll(){
+  buildTL();buildQual();buildOuts();buildCtx();buildCL();buildRiskAll();selLvl(selLvlV);
+}
+
+// ── AUTO-SAVE on contenteditable blur ──
+document.addEventListener('blur',e=>{if(e.target&&e.target.isContentEditable)setTimeout(save,100);},true);
+
+// ── INIT ──
+loadDefaults();
+load(); // override with saved data if exists
+buildAll();
+window.addEventListener('resize',()=>{if(!document.getElementById('tab-map').classList.contains('hidden'))drawMap();});
+</script>
+</body>
+</html>
