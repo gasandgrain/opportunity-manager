@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +17,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
   --text-warning:#b45309;--text-danger:#dc2626;--text-info:#1d4ed8;
   --bg-success:rgba(22,163,74,0.08);--bg-warning:rgba(180,83,9,0.08);
   --bg-danger:rgba(220,38,38,0.08);--bg-info:rgba(29,78,216,0.08);
-  background:var(--bg);color:var(--text-primary);padding:28px 20px 80px;
+  background:var(--bg);color:var(--text-primary);padding:28px 20px 40px;
 }
 #tracker-view .wrap{max-width:760px;margin:0 auto;}
 #tracker-view .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:0.5px solid var(--border);}
@@ -65,11 +64,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 #tracker-view .gap-card{background:var(--bg-card);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:10px;}
 #tracker-view .gap-title{font-size:12px;font-weight:500;margin-bottom:7px;}
 #tracker-view .gap-text{font-size:12px;color:var(--text-secondary);line-height:1.75;}
-#tracker-view .save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:0.5px solid var(--border);padding:11px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:100;}
-#tracker-view .save-note{font-size:11px;color:var(--text-secondary);}
-#tracker-view .save-btn{background:var(--bg-card2);border:0.5px solid var(--border-lt);border-radius:6px;color:var(--text-primary);font-size:12px;font-weight:500;font-family:inherit;padding:7px 18px;cursor:pointer;transition:background 0.15s;}
-#tracker-view .save-btn:hover{background:var(--border);}
-#tracker-view .save-btn.saved{background:var(--bg-success);color:var(--text-success);border-color:transparent;}
+
 #tracker-view .deal-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 #tracker-view .deal-pill{background:var(--bg-card2);border:0.5px solid var(--border-lt);border-radius:8px;padding:7px 10px;flex:1;min-width:140px;}
 #tracker-view .deal-pill-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:3px;}
@@ -339,10 +334,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     <button onclick="loadPendingUpdates()" style="margin-top:10px;font-size:11px;color:#6b6b6b;background:none;border:none;cursor:pointer;font-family:inherit;">↺ Refresh</button>
   </div>
 </div>
-<div class="save-bar">
-  <span class="save-note" id="save-note">Make changes above, then save.</span>
-  <button class="save-btn" id="save-btn" onclick="saveTracker()">Save current numbers</button>
-</div>
+
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
@@ -453,6 +445,32 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 
 <script>
 // ══════════════════════════════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════════════════════════════
+const SUPA_URL='https://kttpfxdfjfchivpvitly.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0dHBmeGRmamZjaGl2cHZpdGx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDE5MTIsImV4cCI6MjA5Nzk3NzkxMn0.qpyZReBzn0ib-1Zb8-V5YQiE5CZGgiYZDw7DYcuQ0QI';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+async function supaLoad(id){
+  try{const{data,error}=await supa.from('deals').select('data').eq('id',id).single();if(error||!data)return null;return data.data;}catch(e){return null;}
+}
+async function supaSave(id,d){
+  try{await supa.from('deals').upsert({id,data:d,updated_at:new Date().toISOString()});}catch(e){console.warn('supaSave failed',e);}
+}
+async function supaSaveTracker(vals){
+  try{await supa.from('deals').upsert({id:'tracker',data:vals,updated_at:new Date().toISOString()});}catch(e){console.warn('supaSaveTracker failed',e);}
+}
+async function supaGetPending(){
+  try{const{data,error}=await supa.from('proposed_updates').select('*').eq('status','pending').order('created_at',{ascending:false});if(error)return[];return data||[];}catch(e){return[];}
+}
+async function supaApproveUpdate(id){
+  try{await supa.from('proposed_updates').update({status:'approved'}).eq('id',id);}catch(e){}
+}
+async function supaRejectUpdate(id){
+  try{await supa.from('proposed_updates').update({status:'rejected'}).eq('id',id);}catch(e){}
+}
+
+// ══════════════════════════════════════════════════════════════
 // TRACKER LOGIC
 // ══════════════════════════════════════════════════════════════
 const QUOTA=444092,PCR=0.2526,LS_TRACKER='fy27-deal-tracker-acvs';
@@ -552,9 +570,7 @@ function updateTracker(){
 function saveTracker(){
   const vals={};
   DEALS_T.forEach(d=>{vals[d.prefix]=parseFloat(document.getElementById(d.aId).value)||0;});
-  // Save term lengths too
   ['t','m','i','o'].forEach(p=>{const el=document.getElementById(p+'-term');if(el)vals[p+'_term']=el.value;});
-  // Save pills
   const pillData={};
   document.querySelectorAll('.deal-pill-val').forEach(el=>{
     const deal=el.dataset.deal,field=el.dataset.field;
@@ -565,11 +581,7 @@ function saveTracker(){
   localStorage.setItem(LS_TRACKER,JSON.stringify(vals));
   supaSaveTracker(vals);
   const now=new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  const btn=document.getElementById('save-btn');
-  btn.textContent='✓ Saved';btn.classList.add('saved');
-  document.getElementById('save-note').textContent='Last saved: '+now;
   document.getElementById('last-saved').textContent=now;
-  setTimeout(()=>{btn.textContent='Save current numbers';btn.classList.remove('saved');},2000);
 }
 async function loadTracker(){
   // Try Supabase first, fall back to localStorage
@@ -598,7 +610,7 @@ async function loadTracker(){
   }catch(e){}
   updateTracker();
 }
-DEALS_T.forEach(d=>document.getElementById(d.aId).addEventListener('input',updateTracker));
+DEALS_T.forEach(d=>document.getElementById(d.aId).addEventListener('input',()=>{updateTracker();saveTracker();}));
 
 // ══════════════════════════════════════════════════════════════
 // DEAL DEFAULTS
