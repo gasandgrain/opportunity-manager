@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Field — FY27 Deal Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ── SHARED ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -68,19 +70,23 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 #tracker-view .save-btn{background:var(--bg-card2);border:0.5px solid var(--border-lt);border-radius:6px;color:var(--text-primary);font-size:12px;font-weight:500;font-family:inherit;padding:7px 18px;cursor:pointer;transition:background 0.15s;}
 #tracker-view .save-btn:hover{background:var(--border);}
 #tracker-view .save-btn.saved{background:var(--bg-success);color:var(--text-success);border-color:transparent;}
+#tracker-view .deal-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+#tracker-view .deal-pill{background:var(--bg-card2);border:0.5px solid var(--border-lt);border-radius:8px;padding:7px 10px;flex:1;min-width:140px;}
+#tracker-view .deal-pill-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:3px;}
+#tracker-view .deal-pill-val{font-size:12px;color:var(--text-primary);outline:none;background:transparent;font-family:inherit;width:100%;cursor:text;}
+#tracker-view .deal-pill-val:empty:before{content:attr(data-ph);color:var(--text-secondary);opacity:0.45;}
+#tracker-view .term-select{font-size:12px;font-weight:500;background:var(--bg-card2);border:0.5px solid var(--border-lt);border-radius:6px;padding:2px 6px;color:var(--text-primary);font-family:inherit;cursor:pointer;}
+#tracker-view .term-select:focus{outline:none;border-color:#999;}
+
 
 /* ── OPPORTUNITY MANAGER THEME (dark) ── */
 #opp-view{
-  --bg:#0A1628;--surf:#112236;--surf2:#1A3050;--bdr:rgba(255,255,255,0.08);
-  --txt:#FFFFFF;--muted:#7A9AB5;--sec:#D8E8F0;--cyan:#00D4C8;--cdim:rgba(0,212,200,0.12);
-  --grn:#22C55E;--amb:#F59E0B;--red:#EF4444;--r:10px;--rs:6px;
-  background:var(--bg);color:var(--txt);padding:16px;min-height:100vh;
-}
-#opp-view.lt{
   --bg:#F8FAFC;--surf:#FFFFFF;--surf2:#F1F5F9;--bdr:rgba(0,0,0,0.08);
   --txt:#0F172A;--muted:#64748B;--sec:#334155;--cyan:#0891B2;--cdim:rgba(8,145,178,0.08);
-  --grn:#16A34A;--amb:#D97706;--red:#DC2626;
+  --grn:#16A34A;--amb:#D97706;--red:#DC2626;--r:10px;--rs:6px;
+  background:var(--bg);color:var(--txt);padding:16px;min-height:100vh;
 }
+
 #opp-view .appwrap{max-width:960px;margin:0 auto;}
 #opp-view .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 #opp-view .logo{font-size:18px;font-weight:500;color:var(--cyan);}
@@ -220,18 +226,20 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="deal-grid">
       <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="t-acv" value="280000" step="5000"/></div></div>
-      <div><div class="stat-label">Term mult</div><div class="stat-value">1.5× (36mo)</div></div>
+      <div><div class="stat-label">Term length</div><select class="term-select" id="t-term" onchange="updateTerm('t')"><option value="12">12mo</option><option value="18">18mo</option><option value="24">24mo</option><option value="36" selected>36mo</option></select></div>
+      <div><div class="stat-label">Term mult</div><div class="stat-value" id="t-mult">1.5×</div></div>
       <div><div class="stat-label">S2→CW prob</div><div class="stat-value">23%</div></div>
       <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="t-wtd">—</div></div>
     </div>
-    <div class="comm-row"><div class="stat-label">Commission impact (if closed, 36mo)</div><div class="stat-value" id="t-comm" style="color:#16a34a">—</div></div>
-    <div class="deal-context"><strong>Context:</strong> Sarah Wilson, AIS Marketing Director (UK, EMEA). Owns 5 verticals. Kyle McKinney (VP Sales, US) is the critical unlock — call Jul 10/11. Joseph Rocchio (Dir of Strategic Initiatives) is marketing-side approver. Scoped to data center vertical only (~10 sellers, $280K). 36mo term = $420K commission-equivalent.</div>
-    <div class="risks"><strong>Key risks:</strong>
-      <span class="risk-tag">Budget not confirmed</span>
-      <span class="risk-tag">Kyle McKinney not yet engaged</span>
-      <span class="risk-tag">ABM stalled 4 yrs internally</span>
-      <span class="risk-tag">No metrics from David yet</span>
+    <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="t-term-lbl">36mo</span>)</div><div class="stat-value" id="t-comm" style="color:#16a34a">—</div></div>
+    <div class="deal-pills">
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="t" data-field="pain">No visibility into data center builds — losing RFPs before they know they're happening</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="t" data-field="outcomes">Get on shortlist before RFPs written · Expand to all 5 AIS verticals</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="t" data-field="last">Call 3 — pricing + implementation overview with Sarah</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="t" data-field="next">Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="t" data-field="close">Jul 10–11</div></div>
     </div>
+    <div class="risks"><strong>Key risks:</strong><div id="t-risks-tags"></div></div>
     <button class="open-deal-btn" onclick="openDeal('teledyne')">Open opportunity manager →</button>
   </div>
 
@@ -243,18 +251,20 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="deal-grid">
       <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="m-acv" value="150000" step="5000"/></div></div>
-      <div><div class="stat-label">Term mult</div><div class="stat-value">1.2× (24mo est)</div></div>
+      <div><div class="stat-label">Term length</div><select class="term-select" id="m-term" onchange="updateTerm('m')"><option value="12">12mo</option><option value="18">18mo</option><option value="24" selected>24mo</option><option value="36">36mo</option></select></div>
+      <div><div class="stat-label">Term mult</div><div class="stat-value" id="m-mult">1.25×</div></div>
       <div><div class="stat-label">S2→CW prob</div><div class="stat-value">23%</div></div>
       <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="m-wtd">—</div></div>
     </div>
-    <div class="comm-row"><div class="stat-label">Commission impact (if closed, 24mo)</div><div class="stat-value" id="m-comm" style="color:#16a34a">—</div></div>
-    <div class="deal-context"><strong>Context:</strong> Champion: Rebecca Dorfman (Marketing Mgr) — grew inbound $6M→$30M. Dan Martone + Mika Badyal evaluating. Ben (CGO) is likely economic buyer — not yet in room. Pain = getting on RFP shortlists before bids are written. Deep demo booked Jun 30. ZoomInfo displacement play.</div>
-    <div class="risks"><strong>Key risks:</strong>
-      <span class="risk-tag">Ben (CGO) not in room</span>
-      <span class="risk-tag">Dan + Mika evaluating, not buyers</span>
-      <span class="risk-tag">RFP-driven motion</span>
-      <span class="risk-tag">No budget confirmed</span>
+    <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="m-term-lbl">24mo</span>)</div><div class="stat-value" id="m-comm" style="color:#16a34a">—</div></div>
+    <div class="deal-pills">
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="m" data-field="pain">Losing RFPs before they know they're happening — 20% win rate on $30M inbound pipeline</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="m" data-field="outcomes">Improve win rate · Get on shortlist before RFPs written · Data-driven rep prioritization</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="m" data-field="last">Discovery call 3 — Jun 24 with Dan, Mika, Rebecca</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="m" data-field="next">Deep demo Jun 30, 11:30am ET — Dan, Mika, Rebecca, Steve Bentley</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="m" data-field="close">TBD</div></div>
     </div>
+    <div class="risks"><strong>Key risks:</strong><div id="m-risks-tags"></div></div>
     <button class="open-deal-btn" onclick="openDeal('mc2')">Open opportunity manager →</button>
   </div>
 
@@ -266,17 +276,20 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="deal-grid">
       <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="i-acv" value="60000" step="5000"/></div></div>
-      <div><div class="stat-label">Term mult</div><div class="stat-value">1.0× (18–23mo)</div></div>
+      <div><div class="stat-label">Term length</div><select class="term-select" id="i-term" onchange="updateTerm('i')"><option value="12">12mo</option><option value="18" selected>18mo</option><option value="24">24mo</option><option value="36">36mo</option></select></div>
+      <div><div class="stat-label">Term mult</div><div class="stat-value" id="i-mult">1.0×</div></div>
       <div><div class="stat-label">S4→CW prob</div><div class="stat-value">72%</div></div>
       <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="i-wtd">—</div></div>
     </div>
-    <div class="comm-row"><div class="stat-label">Commission impact (if closed)</div><div class="stat-value" id="i-comm" style="color:#16a34a">—</div></div>
-    <div class="deal-context"><strong>Context:</strong> Fixed SQL ceiling — 4,406 MQLs unworked by sales. Core pitch: AI email works the backlog without headcount. 9,649 MQLs · 16% MQL→SQL · 28% SQL→CW · $9,703 ASV → ~107% attainment masking real problem. Highest probability deal at S4.</div>
-    <div class="risks"><strong>Key risks:</strong>
-      <span class="risk-tag">Data trust gap / duplication issue</span>
-      <span class="risk-tag">Sales-marketing misalignment</span>
-      <span class="risk-tag">ACV unknown — using ENT avg</span>
+    <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="i-term-lbl">18mo</span>)</div><div class="stat-value" id="i-comm" style="color:#16a34a">—</div></div>
+    <div class="deal-pills">
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="i" data-field="pain">Fixed SQL ceiling — 4,406 MQLs unworked. Paying more for same real demand buried in noise.</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="i" data-field="outcomes">Work unworked MQL backlog without headcount · Lift MQL→SQL from 16% toward 27%</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="i" data-field="last">Discovery complete — funnel data captured</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="i" data-field="next">Business case presentation — unblock data trust issue first</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="i" data-field="close">TBD</div></div>
     </div>
+    <div class="risks"><strong>Key risks:</strong><div id="i-risks-tags"></div></div>
     <button class="open-deal-btn" onclick="openDeal('isolved')">Open opportunity manager →</button>
   </div>
 
@@ -288,16 +301,19 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="deal-grid">
       <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="o-acv" value="150000" step="5000"/></div></div>
-      <div><div class="stat-label">Term mult</div><div class="stat-value">1.0× (est)</div></div>
+      <div><div class="stat-label">Term length</div><select class="term-select" id="o-term" onchange="updateTerm('o')"><option value="12" selected>12mo</option><option value="18">18mo</option><option value="24">24mo</option><option value="36">36mo</option></select></div>
+      <div><div class="stat-label">Term mult</div><div class="stat-value" id="o-mult">1.0×</div></div>
       <div><div class="stat-label">S1→CW prob</div><div class="stat-value">9%</div></div>
       <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="o-wtd">—</div></div>
     </div>
-    <div class="deal-context"><strong>Context:</strong> Peter Antogiovanni (Head of AI Transformation) — Touch 3 sent, no reply. Touch 4 pending. Keshav Bangalore (Head of Sales) — Ryan outreaching. On radar via intent data: Orion researching AI ABM + account targeting.</div>
-    <div class="risks"><strong>Key risks:</strong>
-      <span class="risk-tag">No meeting yet</span>
-      <span class="risk-tag">Peter unresponsive (3 touches)</span>
-      <span class="risk-tag">S1→CW is long math</span>
+    <div class="deal-pills">
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="o" data-field="pain">Unknown — no meeting yet. Intent signals suggest AI GTM / ABM scoping.</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="o" data-field="outcomes">TBD — get first meeting to qualify</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="o" data-field="last">Touch 3 sent to Peter — no reply</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="o" data-field="next">Touch 4 pending + Ryan outreaching to Keshav</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="o" data-field="close">TBD</div></div>
     </div>
+    <div class="risks"><strong>Key risks:</strong><div id="o-risks-tags"></div></div>
     <button class="open-deal-btn" onclick="openDeal('orion')">Open opportunity manager →</button>
   </div>
 
@@ -312,6 +328,15 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
   <div class="gap-card">
     <div class="gap-title">What closes the gap</div>
     <div class="gap-text" id="gap-narrative">—</div>
+  </div>
+
+  <div id="pending-card" style="display:none;background:#ffffff;border:0.5px solid #e5e3dc;border-radius:12px;padding:14px 16px;margin-top:10px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:500;">Pending AI updates</div>
+      <span id="pending-count" style="font-size:11px;background:rgba(29,78,216,0.08);color:#1d4ed8;padding:2px 8px;border-radius:20px;font-weight:500;"></span>
+    </div>
+    <div id="pending-list"></div>
+    <button onclick="loadPendingUpdates()" style="margin-top:10px;font-size:11px;color:#6b6b6b;background:none;border:none;cursor:pointer;font-family:inherit;">↺ Refresh</button>
   </div>
 </div>
 <div class="save-bar">
@@ -329,8 +354,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     <div class="logo">Field <span id="opp-deal-label">opportunity manager</span></div>
     <div class="topbtns">
       <button class="back-btn" onclick="backToTracker()">← Back to tracker</button>
-      <div class="tbtn" onclick="oppReset()" style="color:#EF4444;border-color:#EF4444;opacity:0.7;">↺ Reset</div>
-      <div class="tbtn" onclick="oppToggleTheme()"><span id="opp-tlbl">Light mode</span></div>
+      <div class="tbtn" onclick="oppReset()" style="color:#DC2626;border-color:#DC2626;opacity:0.7;">↺ Reset</div>
     </div>
   </div>
   <div class="tabs">
@@ -433,12 +457,67 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 // ══════════════════════════════════════════════════════════════
 const QUOTA=444092,PCR=0.2526,LS_TRACKER='fy27-deal-tracker-acvs';
 function fmtT(n){if(!isFinite(n))return'—';const a=Math.abs(n),s=n<0?'-':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return s+'$'+Math.round(a/1e3)+'K';return s+'$'+Math.round(a).toLocaleString();}
+const TERM_MULTS={12:1.0,18:1.0,24:1.25,36:1.5};
 const DEALS_T=[
   {prefix:'t',aId:'t-acv',wId:'t-wtd',cId:'t-comm',prob:0.23,mult:1.5},
-  {prefix:'m',aId:'m-acv',wId:'m-wtd',cId:'m-comm',prob:0.23,mult:1.2},
+  {prefix:'m',aId:'m-acv',wId:'m-wtd',cId:'m-comm',prob:0.23,mult:1.25},
   {prefix:'i',aId:'i-acv',wId:'i-wtd',cId:'i-comm',prob:0.72,mult:1.0},
   {prefix:'o',aId:'o-acv',wId:'o-wtd',cId:null,    prob:0.092,mult:1.0},
 ];
+function updateTerm(p){
+  const mo=parseInt(document.getElementById(p+'-term').value);
+  const mult=TERM_MULTS[mo]||1.0;
+  const d=DEALS_T.find(x=>x.prefix===p);
+  if(d) d.mult=mult;
+  const multEl=document.getElementById(p+'-mult');
+  if(multEl) multEl.textContent=mult+'×';
+  const lblEl=document.getElementById(p+'-term-lbl');
+  if(lblEl) lblEl.textContent=mo+'mo';
+  updateTracker();
+  saveTracker();
+}
+// Deal keys map
+const DEAL_KEYS={t:'teledyne',m:'mc2',i:'isolved',o:'orion'};
+
+function renderTrackerRisks(){
+  ['t','m','i','o'].forEach(p=>{
+    const dealKey=DEAL_KEYS[p];
+    const el=document.getElementById(p+'-risks-tags');
+    if(!el) return;
+    const def=DEAL_DEFAULTS[dealKey];
+    if(!def||!def.risks) return;
+    // Use label field for short tracker display; fall back to truncated t
+    el.innerHTML=def.risks.map(r=>{
+      const display=r.label||(r.t.length>55?r.t.substring(0,52)+'...':r.t);
+      const color=r.l==='high'?'background:rgba(220,38,38,0.08);color:#dc2626;border-color:rgba(220,38,38,0.2);':
+                  r.l==='med'?'background:rgba(180,83,9,0.08);color:#b45309;border-color:rgba(180,83,9,0.2);':
+                  'background:rgba(22,163,74,0.08);color:#16a34a;border-color:rgba(22,163,74,0.2);';
+      return `<span class="risk-tag" style="${color}border:0.5px solid;margin-top:4px;">${display}</span>`;
+    }).join('');
+  });
+}
+
+function saveTrackerPills(){
+  const pillData={};
+  document.querySelectorAll('.deal-pill-val').forEach(el=>{
+    const deal=el.dataset.deal,field=el.dataset.field;
+    if(!pillData[deal]) pillData[deal]={};
+    pillData[deal][field]=el.textContent.trim();
+  });
+  localStorage.setItem('field-tracker-pills',JSON.stringify(pillData));
+  supaSaveTracker({...JSON.parse(localStorage.getItem(LS_TRACKER)||'{}'),pills:pillData});
+}
+
+function loadTrackerPills(savedPills){
+  if(!savedPills) return;
+  document.querySelectorAll('.deal-pill-val').forEach(el=>{
+    const deal=el.dataset.deal,field=el.dataset.field;
+    if(savedPills[deal]&&savedPills[deal][field]!==undefined){
+      el.textContent=savedPills[deal][field];
+    }
+  });
+}
+
 function updateTracker(){
   let tot=0;
   DEALS_T.forEach(d=>{
@@ -473,7 +552,18 @@ function updateTracker(){
 function saveTracker(){
   const vals={};
   DEALS_T.forEach(d=>{vals[d.prefix]=parseFloat(document.getElementById(d.aId).value)||0;});
+  // Save term lengths too
+  ['t','m','i','o'].forEach(p=>{const el=document.getElementById(p+'-term');if(el)vals[p+'_term']=el.value;});
+  // Save pills
+  const pillData={};
+  document.querySelectorAll('.deal-pill-val').forEach(el=>{
+    const deal=el.dataset.deal,field=el.dataset.field;
+    if(!pillData[deal]) pillData[deal]={};
+    pillData[deal][field]=el.textContent.trim();
+  });
+  vals.pills=pillData;
   localStorage.setItem(LS_TRACKER,JSON.stringify(vals));
+  supaSaveTracker(vals);
   const now=new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   const btn=document.getElementById('save-btn');
   btn.textContent='✓ Saved';btn.classList.add('saved');
@@ -481,8 +571,31 @@ function saveTracker(){
   document.getElementById('last-saved').textContent=now;
   setTimeout(()=>{btn.textContent='Save current numbers';btn.classList.remove('saved');},2000);
 }
-function loadTracker(){
-  try{const raw=localStorage.getItem(LS_TRACKER);if(raw){const v=JSON.parse(raw);DEALS_T.forEach(d=>{if(v[d.prefix]!==undefined)document.getElementById(d.aId).value=v[d.prefix];});}}catch(e){}
+async function loadTracker(){
+  // Try Supabase first, fall back to localStorage
+  try {
+    const remote = await supaLoad('tracker');
+    if(remote) {
+      DEALS_T.forEach(d=>{if(remote[d.prefix]!==undefined)document.getElementById(d.aId).value=remote[d.prefix];});
+      if(remote.pills) loadTrackerPills(remote.pills);
+      // Restore term selectors
+      ['t','m','i','o'].forEach(p=>{
+        const termEl=document.getElementById(p+'-term');
+        if(termEl&&remote[p+'_term']){termEl.value=remote[p+'_term'];updateTerm(p);}
+      });
+      updateTracker(); return;
+    }
+  } catch(e) {}
+  try{
+    const raw=localStorage.getItem(LS_TRACKER);
+    if(raw){
+      const v=JSON.parse(raw);
+      DEALS_T.forEach(d=>{if(v[d.prefix]!==undefined)document.getElementById(d.aId).value=v[d.prefix];});
+      if(v.pills) loadTrackerPills(v.pills);
+    }
+    const pillRaw=localStorage.getItem('field-tracker-pills');
+    if(pillRaw) loadTrackerPills(JSON.parse(pillRaw));
+  }catch(e){}
   updateTracker();
 }
 DEALS_T.forEach(d=>document.getElementById(d.aId).addEventListener('input',updateTracker));
@@ -564,10 +677,10 @@ const DEAL_DEFAULTS={
       {g:'Close',items:[{t:'Ben (CGO) engaged directly',d:false},{t:'Mutual close plan agreed',d:false},{t:'Legal / procurement engaged',d:false}]},
     ],
     risks:[
-      {t:"Ben (CGO) not yet in the room — Dan and Mika are evaluating but can't buy.",l:'high',s:'Discovery · Jun 24'},
-      {t:"RFP-driven motion — 6sense helps them get on the shortlist before RFPs, but fit is limited for the RFP response process itself.",l:'med',s:'Internal assessment'},
-      {t:"Revenue data gated — can't build ROI model without ADS and closed revenue figures.",l:'high',s:'Discovery call'},
-      {t:"Price sensitivity: $150K–$300K range got a 'that's a lot' reaction from Dan. Business case must be airtight before pricing escalates.",l:'med',s:'Call 3 · Jun 24'},
+      {t:"Ben (CGO) not yet in the room — Dan and Mika are evaluating but can't buy.",l:'high',s:'Discovery · Jun 24',label:"Economic buyer (Ben) not in the room"},
+      {t:"RFP-driven motion — 6sense helps them get on the shortlist before RFPs, but fit is limited for the RFP response process itself.",l:'med',s:'Internal assessment',label:'RFP-driven motion limits fit'},
+      {t:"Revenue data gated — can't build ROI model without ADS and closed revenue figures.",l:'high',s:'Discovery call',label:'Revenue data gated — ROI model blocked'},
+      {t:"Price sensitivity: $150K–$300K range got a 'that's a lot' reaction from Dan. Business case must be airtight before pricing escalates.",l:'med',s:'Call 3 · Jun 24',label:"Dan reacted to price — business case must come first"},
     ],
     uid:10,standalonePos:{}
   },
@@ -602,10 +715,10 @@ const DEAL_DEFAULTS={
       {g:'Close',items:[{t:'Mutual close plan agreed with champion',d:false},{t:'Legal / procurement engaged',d:false}]},
     ],
     risks:[
-      {t:"Sales org doesn't trust data quality — duplication issue flagged in discovery. 6sense needs to bring a proposed fix to next call.",l:'high',s:'Discovery call'},
-      {t:'Economic buyer not yet identified or engaged. Deal could stall without exec sponsorship.',l:'high',s:'Internal assessment'},
-      {t:'No defined success metrics agreed — deal could stall at proposal without this.',l:'med',s:'Internal assessment'},
-      {t:"ZoomInfo deeply embedded — displacement conversation hasn't happened formally.",l:'med',s:'Tech stack research'},
+      {t:"Sales org doesn't trust data quality — duplication issue flagged in discovery. 6sense needs to bring a proposed fix to next call.",l:'high',s:'Discovery call',label:'Sales org data trust gap — duplication issue'},
+      {t:'Economic buyer not yet identified or engaged. Deal could stall without exec sponsorship.',l:'high',s:'Internal assessment',label:'No economic buyer identified yet'},
+      {t:'No defined success metrics agreed — deal could stall at proposal without this.',l:'med',s:'Internal assessment',label:'Success metrics not agreed'},
+      {t:"ZoomInfo deeply embedded — displacement conversation hasn't happened formally.",l:'med',s:'Tech stack research',label:'ZoomInfo displacement not addressed'},
     ],
     uid:5,standalonePos:{}
   },
@@ -640,9 +753,9 @@ const DEAL_DEFAULTS={
       {g:'Close',items:[{t:'Proposal delivered',d:false},{t:'Close plan agreed',d:false}]},
     ],
     risks:[
-      {t:"Peter Antogiovanni unresponsive after 3 touches. Risk of burning the contact if Touch 4 is too aggressive.",l:'high',s:'Outreach log'},
-      {t:"AI/GTM project scope unconfirmed — could be research only, not an active buying project.",l:'high',s:'Internal assessment'},
-      {t:"S1→CW conversion is long math (40%×23% = ~9%). Long-tail deal.",l:'med',s:'Conversion data'},
+      {t:"Peter Antogiovanni unresponsive after 3 touches. Risk of burning the contact if Touch 4 is too aggressive.",l:'high',s:'Outreach log',label:'Peter unresponsive after 3 touches'},
+      {t:"AI/GTM project scope unconfirmed — could be research only, not an active buying project.",l:'high',s:'Internal assessment',label:'Active buying project unconfirmed'},
+      {t:"S1→CW conversion is long math (40%×23% = ~9%). Long-tail deal.",l:'med',s:'Conversion data',label:'Long-tail math — 9% S1→CW probability'},
     ],
     uid:5,standalonePos:{}
   }
@@ -692,8 +805,8 @@ function setOppField(id,val){const el=document.getElementById(id);if(el)el.textC
 function oppSave(){
   if(!currentDeal)return;
   try{
-    localStorage.setItem(storeKey(currentDeal),JSON.stringify({
-      oppStage,oppIsLt,
+    const saveData = {
+      oppStage,
       name:document.getElementById('opp-name')?.textContent,
       badge:document.getElementById('opp-badge')?.textContent,
       sub:document.getElementById('opp-sub')?.textContent,
@@ -704,18 +817,28 @@ function oppSave(){
       next:document.getElementById('opp-next')?.textContent,
       conf:document.getElementById('opp-conf-range')?.value,
       oppQd,oppOuts,oppCtx,oppCs,oppUid,oppStandalonePos,oppCl,oppRisks,oppSelLvl
-    }));
+    };
+    localStorage.setItem(storeKey(currentDeal),JSON.stringify(saveData));
+    supaSave(currentDeal, saveData);
   }catch(e){}
 }
 
-function oppLoad(deal){
+async function oppLoad(deal){
+  // Try Supabase first
+  try {
+    const remote = await supaLoad(deal);
+    if(remote && remote.oppQd && remote.oppCl && remote.oppRisks) {
+      applyOppData(deal, remote);
+      return true;
+    }
+  } catch(e) {}
   try{
     const raw=localStorage.getItem(storeKey(deal));
     if(!raw)return false;
     const d=JSON.parse(raw);
     if(!d.oppQd||!d.oppCl||!d.oppRisks)return false;
     oppStage=d.oppStage??DEAL_DEFAULTS[deal].stage;
-    oppIsLt=d.oppIsLt??false;
+    
     if(d.oppQd)oppQd=d.oppQd;
     if(d.oppOuts)oppOuts=d.oppOuts;
     if(d.oppCtx)oppCtx=d.oppCtx;
@@ -740,16 +863,41 @@ function oppLoad(deal){
   }catch(e){return false;}
 }
 
-function openDeal(deal){
+function applyOppData(deal, d) {
+  if(!d) return false;
+  oppStage=d.oppStage??DEAL_DEFAULTS[deal].stage;
+  
+  if(d.oppQd)oppQd=d.oppQd;
+  if(d.oppOuts)oppOuts=d.oppOuts;
+  if(d.oppCtx)oppCtx=d.oppCtx;
+  if(d.oppCs)oppCs=d.oppCs;
+  if(d.oppUid)oppUid=d.oppUid;
+  if(d.oppStandalonePos)oppStandalonePos=d.oppStandalonePos;
+  if(d.oppCl)oppCl=d.oppCl;
+  if(d.oppRisks)oppRisks=d.oppRisks;
+  if(d.oppSelLvl)oppSelLvl=d.oppSelLvl;
+  if(d.name)setOppField('opp-name',d.name);
+  if(d.badge)setOppField('opp-badge',d.badge);
+  if(d.sub)setOppField('opp-sub',d.sub);
+  if(d.arr)setOppField('opp-arr',d.arr);
+  if(d.services)setOppField('opp-services',d.services);
+  if(d.close)setOppField('opp-close',d.close);
+  if(d.last)setOppField('opp-last',d.last);
+  if(d.next)setOppField('opp-next',d.next);
+  if(d.conf!=null){const cr=document.getElementById('opp-conf-range');if(cr)cr.value=d.conf;document.getElementById('opp-cpct').textContent=d.conf+'%';}
+  document.getElementById('opp-plan-lbl').textContent='Close plan — '+(d.name||DEAL_DEFAULTS[deal].name);
+  document.getElementById('opp-deal-label').textContent=d.name||DEAL_DEFAULTS[deal].name;
+  return true;
+}
+
+async function openDeal(deal){
   currentDeal=deal;
   document.getElementById('tracker-view').classList.add('hidden');
   const ov=document.getElementById('opp-view');
   ov.classList.remove('hidden');
-  oppIsLt=false;
-  ov.classList.remove('lt');
-  document.getElementById('opp-tlbl').textContent='Light mode';
+
   oppLoadDefaults(deal);
-  oppLoad(deal);
+  await oppLoad(deal);
   oppBuildAll();
   oppShow('deal');
 }
@@ -766,14 +914,7 @@ function oppReset(){
   oppBuildAll();
 }
 
-function oppToggleTheme(){
-  oppIsLt=!oppIsLt;
-  document.getElementById('opp-view').classList.toggle('lt',oppIsLt);
-  document.getElementById('opp-tlbl').textContent=oppIsLt?'Dark mode':'Light mode';
-  oppBuildRiskAll();oppBuildCL();oppBuildCtx();oppBuildOuts();
-  if(!document.getElementById('opp-map').classList.contains('hidden'))oppDrawMap();
-  oppSave();
-}
+
 
 function oppShow(name){
   ['deal','map','plan','risk'].forEach(t=>document.getElementById('opp-'+t).classList.toggle('hidden',t!==name));
@@ -875,8 +1016,7 @@ function oppLayout(){
 }
 function getSVGC(e){const r=svgEl.getBoundingClientRect();return{x:(e.clientX-r.left)*(SVG_W/r.width),y:(e.clientY-r.top)*(SVG_H/r.height)};}
 function oppRenderMap(gId,gX,gY,dT){
-  const dk=!document.getElementById('opp-view').classList.contains('lt');
-  const tc=dk?'#D8E8F0':'#1E293B',mc=dk?'#7A9AB5':'#64748B',bg=dk?'#1A3050':'#F1F5F9';
+  const tc='#1E293B',mc='#64748B',bg='#F1F5F9';
   let h=`<defs><marker id="ar" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${mc}" opacity="0.45"/></marker></defs>`;
   oppCs.forEach(c=>{
     if(!c.parent)return;
@@ -1032,8 +1172,60 @@ document.addEventListener('blur',e=>{
   if(e.target&&e.target.isContentEditable&&currentDeal)setTimeout(oppSave,100);
 },true);
 
+// ── PENDING UPDATES ──
+async function loadPendingUpdates() {
+  const updates = await supaGetPending();
+  const card = document.getElementById('pending-card');
+  const list = document.getElementById('pending-list');
+  const count = document.getElementById('pending-count');
+  
+  if(!updates.length) { card.style.display='none'; return; }
+  
+  card.style.display='block';
+  count.textContent = updates.length + ' pending';
+  
+  list.innerHTML = updates.map(u => `
+    <div style="padding:10px 0;border-bottom:0.5px solid #e5e3dc;" id="upd-${u.id}">
+      <div style="font-size:12px;font-weight:500;margin-bottom:3px;">${u.deal_id.toUpperCase()}</div>
+      <div style="font-size:12px;color:#6b6b6b;margin-bottom:8px;line-height:1.5;">${u.changes_summary}</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="approveUpdate('${u.id}','${u.deal_id}',${JSON.stringify(u.proposed_data).replace(/'/g,"\'")})" 
+          style="font-size:11px;padding:4px 12px;border-radius:6px;border:none;background:#16a34a;color:white;cursor:pointer;font-family:inherit;font-weight:500;">
+          ✓ Approve
+        </button>
+        <button onclick="rejectUpdate('${u.id}')"
+          style="font-size:11px;padding:4px 12px;border-radius:6px;border:0.5px solid #e5e3dc;background:transparent;color:#6b6b6b;cursor:pointer;font-family:inherit;">
+          ✕ Reject
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+async function approveUpdate(updateId, dealId, proposedData) {
+  await supaApproveUpdate(updateId);
+  // Apply the proposed data to the deal in Supabase
+  await supaSave(dealId, proposedData);
+  // Remove from UI
+  const el = document.getElementById('upd-'+updateId);
+  if(el) el.style.opacity='0.4';
+  setTimeout(()=>loadPendingUpdates(), 500);
+}
+
+async function rejectUpdate(updateId) {
+  await supaRejectUpdate(updateId);
+  const el = document.getElementById('upd-'+updateId);
+  if(el) el.style.opacity='0.4';
+  setTimeout(()=>loadPendingUpdates(), 500);
+}
+
 // ── INIT ──
+// Attach pill save on blur
+document.querySelectorAll('.deal-pill-val').forEach(el=>{
+  el.addEventListener('blur',saveTrackerPills);
+});
 loadTracker();
+renderTrackerRisks();
+setTimeout(loadPendingUpdates, 2000);
 window.addEventListener('resize',()=>{if(svgEl&&!document.getElementById('opp-map').classList.contains('hidden'))oppDrawMap();});
 </script>
 </body>
