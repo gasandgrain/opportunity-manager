@@ -205,6 +205,16 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 #opp-view .rbody{flex:1;}
 #opp-view .rtext{font-size:13px;color:var(--sec);line-height:1.5;}
 #opp-view .rsrc{font-size:11px;color:var(--muted);margin-top:2px;}
+#opp-view .ri{cursor:default;border-radius:8px;padding:10px;margin:0 -10px;transition:background .12s;}
+#opp-view .ri:hover{background:var(--surf2);}
+#opp-view .rgrip{cursor:grab;color:var(--muted);opacity:0.4;font-size:14px;flex-shrink:0;padding-top:1px;user-select:none;line-height:1;}
+#opp-view .rgrip:active{cursor:grabbing;}
+#opp-view .ri:hover .rgrip{opacity:0.7;}
+#opp-view .ri.dragging{opacity:0.4;background:var(--surf2);}
+#opp-view .ri.drag-over{border-top:2px solid var(--cyan);}
+#opp-view .rdel{flex-shrink:0;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surf2);border:0.5px solid var(--bdr);color:var(--muted);font-size:12px;transition:all .12s;padding:0;font-family:inherit;}
+#opp-view .rdel:hover{background:#EF444418;border-color:#EF4444;color:#EF4444;}
+#opp-view .rfilter-btn{font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;font-weight:500;font-family:inherit;transition:all .12s;}
 #opp-view .add-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:0.5px solid var(--bdr);}
 #opp-view .add-input{flex:1;font-size:13px;outline:none;background:transparent;padding:0;line-height:1.4;font-family:inherit;}
 #opp-view .add-input:empty:before{content:'Describe the risk or blocker...';color:var(--muted);opacity:0.45;pointer-events:none;}
@@ -488,7 +498,8 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 
   <div id="opp-risk" class="hidden">
     <div class="card">
-      <div class="lbl">Deal risks — click severity to cycle · click ✕ to remove</div>
+      <div class="lbl">Deal risks — click severity to cycle · drag to reorder</div>
+      <div id="opp-risk-filter" style="display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"></div>
       <div id="opp-rl"></div>
       <div class="add-row">
         <div class="add-input" contenteditable="true" id="opp-ri"></div>
@@ -1324,18 +1335,61 @@ function oppToggleShared(ii){oppCl[ii].shared=!oppCl[ii].shared;oppBuildCL();opp
 const LVLS=['high','med','low'];
 const RC={high:'#EF4444',med:'#F59E0B',low:'#22C55E'};
 const RLB={high:'High',med:'Med',low:'Low'};
-function oppBuildRiskAll(){oppBuildRisks();oppBuildPills();oppBuildRiskStatic();}
+function oppBuildRiskAll(){oppBuildRiskFilter();oppBuildRisks();oppBuildPills();oppBuildRiskStatic();}
+let oppRiskFilter='all';
+function oppBuildRiskFilter(){
+  const el=document.getElementById('opp-risk-filter');
+  if(!el)return;
+  const counts={all:oppRisks.length,high:0,med:0,low:0};
+  oppRisks.forEach(r=>{counts[r.l]=(counts[r.l]||0)+1;});
+  const opts=[['all','All'],['high','High'],['med','Med'],['low','Low']];
+  el.innerHTML='<span style="font-size:11px;color:var(--muted);margin-right:2px;">Filter:</span>'+opts.map(([v,lbl])=>{
+    const isSel=v===oppRiskFilter;
+    const col=v==='all'?(isSel?oppCyan():oppFg()):RC[v];
+    const bg=isSel?(v==='all'?oppCyandim():RC[v]+'22'):'transparent';
+    const bd=isSel?(v==='all'?oppCyan():RC[v]):(oppIsLt?'rgba(0,0,0,0.15)':'rgba(255,255,255,0.15)');
+    return `<button class="rfilter-btn" onclick="oppSetRiskFilter('${v}')" style="background:${bg};color:${isSel?col:oppFg()};border:0.5px solid ${bd};opacity:${isSel?1:0.65};">${lbl} ${counts[v]||0}</button>`;
+  }).join('');
+}
+function oppSetRiskFilter(v){oppRiskFilter=v;oppBuildRiskAll();}
 function oppBuildRisks(){
   const f=oppFg();
-  document.getElementById('opp-rl').innerHTML=oppRisks.map((r,i)=>`
-    <div class="ri">
+  const rows=oppRisks.map((r,i)=>({r,i})).filter(o=>oppRiskFilter==='all'||o.r.l===oppRiskFilter);
+  const canDrag=oppRiskFilter==='all';
+  const el=document.getElementById('opp-rl');
+  if(!rows.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:16px 0;text-align:center;">No risks at this level.</div>';document.getElementById('opp-ri').style.color=oppFg();return;}
+  el.innerHTML=rows.map(({r,i})=>`
+    <div class="ri" data-idx="${i}" ${canDrag?'draggable="true"':''}>
+      ${canDrag?'<div class="rgrip" title="Drag to reorder">⠿</div>':''}
       <div class="rind"><div class="rdot" style="background:${RC[r.l]};"></div>
-        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:${RC[r.l]};cursor:pointer;user-select:none;" onclick="oppCycleRisk(${i})">${RLB[r.l]}</div>
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:${RC[r.l]};cursor:pointer;user-select:none;" onclick="oppCycleRisk(${i})" title="Click to change severity">${RLB[r.l]}</div>
       </div>
-      <div class="rbody"><div class="rtext">${r.t}</div><div class="rsrc">${r.s}</div></div>
-      <button onclick="oppRemRisk(${i})" style="color:${f};opacity:0.6;cursor:pointer;font-size:11px;flex-shrink:0;background:none;border:none;font-family:inherit;padding-top:2px;" onmouseover="this.style.opacity='1';this.style.color='#EF4444'" onmouseout="this.style.opacity='0.6';this.style.color='${f}'">✕</button>
+      <div class="rbody"><div class="rtext" contenteditable="true" onblur="oppRisks[${i}].t=this.textContent.trim();oppSave()">${r.t}</div><div class="rsrc">${r.s}</div></div>
+      <button class="rdel" onclick="oppRemRisk(${i})" title="Delete risk">✕</button>
     </div>`).join('');
   document.getElementById('opp-ri').style.color=oppFg();
+  if(canDrag)oppWireRiskDrag();
+}
+// Drag-to-reorder
+let oppDragIdx=null;
+function oppWireRiskDrag(){
+  const rows=document.querySelectorAll('#opp-rl .ri');
+  rows.forEach(row=>{
+    row.addEventListener('dragstart',e=>{oppDragIdx=parseInt(row.dataset.idx);row.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    row.addEventListener('dragend',()=>{row.classList.remove('dragging');document.querySelectorAll('#opp-rl .ri').forEach(r=>r.classList.remove('drag-over'));});
+    row.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
+    row.addEventListener('dragenter',e=>{e.preventDefault();if(parseInt(row.dataset.idx)!==oppDragIdx)row.classList.add('drag-over');});
+    row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
+    row.addEventListener('drop',e=>{
+      e.preventDefault();
+      const target=parseInt(row.dataset.idx);
+      if(oppDragIdx===null||oppDragIdx===target)return;
+      const[moved]=oppRisks.splice(oppDragIdx,1);
+      oppRisks.splice(target,0,moved);
+      oppDragIdx=null;
+      oppBuildRiskAll();oppSave();
+    });
+  });
 }
 function oppBuildPills(){
   const f=oppFg();
