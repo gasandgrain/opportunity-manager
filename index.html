@@ -228,7 +228,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="t-term-lbl">36mo</span>)</div><div class="stat-value" id="t-comm" style="color:#16a34a">—</div></div>
     <div class="deal-pills">
-      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="t" data-field="pain">No visibility into data center builds — losing RFPs before they know they're happening</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="t" data-field="pain">No visibility into data center builds — losing RFPs before they know they are happening</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="t" data-field="outcomes">Get on shortlist before RFPs written · Expand to all 5 AIS verticals</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="t" data-field="last">Call 3 — pricing + implementation overview with Sarah</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="t" data-field="next">Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST</div></div>
@@ -253,7 +253,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     </div>
     <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="m-term-lbl">24mo</span>)</div><div class="stat-value" id="m-comm" style="color:#16a34a">—</div></div>
     <div class="deal-pills">
-      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="m" data-field="pain">Losing RFPs before they know they're happening — 20% win rate on $30M inbound pipeline</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="m" data-field="pain">Losing RFPs before they know they are happening — 20% win rate on $30M inbound pipeline</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="m" data-field="outcomes">Improve win rate · Get on shortlist before RFPs written · Data-driven rep prioritization</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="m" data-field="last">Discovery call 3 — Jun 24 with Dan, Mika, Rebecca</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="m" data-field="next">Deep demo Jun 30, 11:30am ET — Dan, Mika, Rebecca, Steve Bentley</div></div>
@@ -468,9 +468,10 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
+console.log("Script loading...");
+// ================================================================
 // SUPABASE
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 const SUPA_URL='https://kttpfxdfjfchivpvitly.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0dHBmeGRmamZjaGl2cHZpdGx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDE5MTIsImV4cCI6MjA5Nzk3NzkxMn0.qpyZReBzn0ib-1Zb8-V5YQiE5CZGgiYZDw7DYcuQ0QI';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
@@ -494,11 +495,11 @@ async function supaRejectUpdate(id){
   try{await supa.from('proposed_updates').update({status:'rejected'}).eq('id',id);}catch(e){}
 }
 
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // TRACKER LOGIC
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 const QUOTA=444092,PCR=0.2526,LS_TRACKER='fy27-deal-tracker-acvs';
-function fmtT(n){if(!isFinite(n))return'—';const a=Math.abs(n),s=n<0?'-':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return s+'$'+Math.round(a/1e3)+'K';return s+'$'+Math.round(a).toLocaleString();}
+function fmtT(n){if(!isFinite(n))return'-';const a=Math.abs(n),s=n<0?'-':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return s+'$'+Math.round(a/1e3)+'K';return s+'$'+Math.round(a).toLocaleString();}
 const TERM_MULTS={12:1.0,18:1.0,24:1.25,36:1.5};
 const DEALS_T=[
   {prefix:'t',aId:'t-acv',wId:'t-wtd',cId:'t-comm',prob:0.23,mult:1.5},
@@ -523,7 +524,7 @@ function updateTerm(p){
 const DEAL_KEYS={t:'teledyne',m:'mc2',i:'isolved',o:'orion',ph:'projecthosts'};
 
 function renderTrackerRisks(){
-  ['t','m','i','o'].forEach(p=>{
+  ['t','m','i','o','ph'].forEach(p=>{
     const dealKey=DEAL_KEYS[p];
     const el=document.getElementById(p+'-risks-tags');
     if(!el) return;
@@ -595,7 +596,7 @@ function updateTracker(){
 function saveTracker(){
   const vals={};
   DEALS_T.forEach(d=>{vals[d.prefix]=parseFloat(document.getElementById(d.aId).value)||0;});
-  ['t','m','i','o'].forEach(p=>{const el=document.getElementById(p+'-term');if(el)vals[p+'_term']=el.value;});
+  ['t','m','i','o','ph'].forEach(p=>{const el=document.getElementById(p+'-term');if(el)vals[p+'_term']=el.value;});
   const pillData={};
   document.querySelectorAll('.deal-pill-val').forEach(el=>{
     const deal=el.dataset.deal,field=el.dataset.field;
@@ -616,7 +617,7 @@ async function loadTracker(){
       DEALS_T.forEach(d=>{if(remote[d.prefix]!==undefined)document.getElementById(d.aId).value=remote[d.prefix];});
       if(remote.pills) loadTrackerPills(remote.pills);
       // Restore term selectors
-      ['t','m','i','o'].forEach(p=>{
+      ['t','m','i','o','ph'].forEach(p=>{
         const termEl=document.getElementById(p+'-term');
         if(termEl&&remote[p+'_term']){termEl.value=remote[p+'_term'];updateTerm(p);}
       });
@@ -637,9 +638,10 @@ async function loadTracker(){
 }
 DEALS_T.forEach(d=>document.getElementById(d.aId).addEventListener('input',()=>{updateTracker();saveTracker();}));
 
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // DEAL DEFAULTS
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+console.log("Defining DEAL_DEFAULTS...");
 const DEAL_DEFAULTS={
   teledyne:{
     name:'Teledyne FLIR',badge:'Active Eval',sub:'Thermal Imaging & Sensing · Enterprise · Josh W.',
@@ -648,11 +650,11 @@ const DEAL_DEFAULTS={
     next:'Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST',
     stage:3,
     qd:[
-      {l:'Pain identified',s:'green',n:'They have no visibility today into data center builds. Huge opportunity for first mover advantage + Cross product selling.',o:false},
-      {l:'Champion confirmed',s:'green',n:'Sarah Wilson, AIS Marketing Director EMEA. Internal champion — owns 5 verticals, directly owns Security + Science. Motivated and engaged.',o:false},
+      {l:'Pain identified',s:'green',n:"They have no visibility today into data center builds. Huge opportunity for first mover advantage + Cross product selling.",o:false},
+      {l:'Champion confirmed',s:'green',n:"Sarah Wilson, AIS Marketing Director EMEA. Internal champion — owns 5 verticals, directly owns Security + Science. Motivated and engaged.",o:false},
       {l:'Economic buyer engaged',s:'amber',n:"Sarah does NOT have budget authority at $280K–$340K. Kyle McKinney (VP Sales, US) is the critical unlock — call scheduled Jul 10/11. Joseph Rocchio also needs to be involved.",o:false},
-      {l:'Decision process mapped',s:'amber',n:'Sequence: Sarah → Kyle buy-in → Joseph Rocchio → budget approval. IT budget path worth exploring — could bypass marketing budget approval.',o:false},
-      {l:'Metrics agreed',s:'red',n:'No metrics confirmed yet. Need: pipeline target for data centers, current pipeline, active opps, account TAM, RFP vol/year, win rate, avg TCV, avg sales cycle.',o:false},
+      {l:'Decision process mapped',s:'amber',n:"Sequence: Sarah → Kyle buy-in → Joseph Rocchio → budget approval. IT budget path worth exploring — could bypass marketing budget approval.",o:false},
+      {l:'Metrics agreed',s:'red',n:"No metrics confirmed yet. Need: pipeline target for data centers, current pipeline, active opps, account TAM, RFP vol/year, win rate, avg TCV, avg sales cycle.",o:false},
       {l:'Close plan aligned',s:'red',n:"No mutual close plan yet. Kyle call is next milestone. Ryan's view: this is not a Q2 closeable deal.",o:false},
     ],
     outs:['Generate pipeline Data Center Vertical.','Stop losing RFPs to competitors already on the shortlist','Give 5 distinct BU verticals a shared signal layer — one marketing director, one view','Intent data continues informing the deal after first meeting (not just pre-outreach)','Expand to full 70-license scope across other verticals once data center proves out'],
@@ -664,9 +666,9 @@ const DEAL_DEFAULTS={
     },
     cs:[
       {id:'c1',name:'Joseph Rocchio',title:'Dir of Strategic Initiatives',role:'Economic Buyer',sup:'amber',notes:"Marketing-side approver. Sarah wasn't fully clear on his exact role. Sequence: Kyle first, then Joseph.",parent:null,x:0,y:0},
-      {id:'c2',name:'Sarah Wilson',title:'AIS Marketing Director, EMEA',role:'Champion',sup:'green',notes:'Internal champion. Directly owns Security + Science. Does NOT have budget authority at $280K–$340K. Needs to escalate to Kyle and Joseph.',parent:'c1',x:0,y:0},
+      {id:'c2',name:'Sarah Wilson',title:'AIS Marketing Director, EMEA',role:'Champion',sup:'green',notes:"Internal champion. Directly owns Security + Science. Does NOT have budget authority at $280K–$340K. Needs to escalate to Kyle and Joseph.",parent:'c1',x:0,y:0},
       {id:'c3',name:'Kyle McKinney',title:'VP Sales, US',role:'Decision Maker',sup:'amber',notes:"Critical unlock. Marketing-savvy, straight shooter. Frame: what does ABM look like without 6sense? Call scheduled Jul 10/11 3PM UK / 6AM PST.",parent:'c1',x:0,y:0},
-      {id:'c4',name:'David',title:'Metrics Contact (via Sarah)',role:'Influencer',sup:'amber',notes:'Contact who can provide the metrics Josh needs for the ROI model. Sarah to route metrics request through David.',parent:'c3',x:0,y:0},
+      {id:'c4',name:'David',title:'Metrics Contact (via Sarah)',role:'Influencer',sup:'amber',notes:"Contact who can provide the metrics Josh needs for the ROI model. Sarah to route metrics request through David.",parent:'c3',x:0,y:0},
     ],
     cl:[
       {g:'Qualify',items:[{t:'Pain formally identified — ABM for data centers',d:true},{t:'Champion confirmed — Sarah Wilson',d:true},{t:'Revised quote at 10 licenses + monthly breakdown sent to Sarah',d:true},{t:'Metrics request sent to Sarah → David',d:true},{t:'Technical integration confirmed (Power BI flat file via Emily Lane)',d:true},{t:'Economic buyer identified — Kyle McKinney + Joseph Rocchio',d:true},{t:'Economic buyer directly engaged — Kyle call confirmed',d:false}]},
@@ -689,22 +691,22 @@ const DEAL_DEFAULTS={
     stage:2,
     qd:[
       {l:'Pain identified',s:'green',n:"$30M inbound pipeline, ~$6M closed (~20% win rate). Rebecca's frame: biggest opportunity = improve conversion. They feel late to the party by the time RFPs arrive.",o:false},
-      {l:'Champion confirmed',s:'green',n:'Rebecca Dorfman — Marketing Manager. Grew inbound $6M→$30M. Primary champion. All follow-up goes through her.',o:false},
+      {l:'Champion confirmed',s:'green',n:"Rebecca Dorfman — Marketing Manager. Grew inbound $6M→$30M. Primary champion. All follow-up goes through her.",o:false},
       {l:'Economic buyer engaged',s:'red',n:"Ben (CGO) is aware of the eval and is likely the economic buyer. Dan reports directly to Ben. Not yet in the room.",o:false},
-      {l:'Decision process mapped',s:'amber',n:'Dana (VP Sales) directed Rebecca to have Dan and Mika evaluate. Dan and Mika will report back to Ben.',o:false},
-      {l:'Metrics agreed',s:'red',n:'Revenue data gated — needs NDA or approval from head of company before sharing. Dan will ask.',o:false},
-      {l:'Close plan aligned',s:'red',n:'No close plan yet. Deep demo is next step.',o:false},
+      {l:'Decision process mapped',s:'amber',n:"Dana (VP Sales) directed Rebecca to have Dan and Mika evaluate. Dan and Mika will report back to Ben.",o:false},
+      {l:'Metrics agreed',s:'red',n:"Revenue data gated — needs NDA or approval from head of company before sharing. Dan will ask.",o:false},
+      {l:'Close plan aligned',s:'red',n:"No close plan yet. Deep demo is next step.",o:false},
     ],
     outs:['Improve win rate on existing inbound pipeline','Get on the RFP shortlist before bids are written','Replace gut-based rep prioritization with data-driven account targeting','Use intent data through the full deal cycle, not just pre-meeting'],
     ctx:{
       Goals:['Improve conversion rate on existing $30M inbound pipeline','Get shortlisted before RFPs are written — 95% of winners are on the shortlist','Hit revenue targets with 12 sales reps on new business'],
       Pressures:['84% customer retention rate amplifies cost of every lost RFP','Rep prioritization today = gut instinct by individual salesperson','ZoomInfo limitation: can see who searches for competitors, not which specific competitor'],
       Initiatives:['Phase 1: new business reps only (~12 reps)','Phase 2: account managers in year two (per Dan)','HubSpot CRM · ZoomInfo · ZoomInfo Marketing Cloud · LinkedIn Sales Nav'],
-      Obstacles:["Revenue data gated — needs approval from head of company","Ben (CGO) not yet directly engaged","Price sensitivity — Dan reacted negatively, business case must be airtight","No ADS confirmed yet — need for ROI model"]
+      Obstacles:["Revenue data gated — needs approval from head of company","Ben (CGO) not yet directly engaged","Price sensitivity — Dan reacted negatively, business case must come first","No ADS confirmed yet — need for ROI model"],
     },
     cs:[
-      {id:'c1',name:'Ben (CGO)',title:'Chief Growth Officer',role:'Economic Buyer',sup:'amber',notes:'Likely economic buyer. Dan reports directly to Ben. Ben is aware of the eval. Last name unknown.',parent:null,x:0,y:0},
-      {id:'c2',name:'Rebecca Dorfman',title:'Marketing Manager',role:'Champion',sup:'green',notes:'Primary champion. Grew inbound $6M→$30M. Owns digital/SEO, sales enablement, competitive analysis. All follow-up goes through her.',parent:'c1',x:0,y:0},
+      {id:'c1',name:'Ben (CGO)',title:'Chief Growth Officer',role:'Economic Buyer',sup:'amber',notes:"Likely economic buyer. Dan reports directly to Ben. Ben is aware of the eval. Last name unknown.",parent:null,x:0,y:0},
+      {id:'c2',name:'Rebecca Dorfman',title:'Marketing Manager',role:'Champion',sup:'green',notes:"Primary champion. Grew inbound $6M→$30M. Owns digital/SEO, sales enablement, competitive analysis. All follow-up goes through her.",parent:'c1',x:0,y:0},
       {id:'c3',name:'Daniel Martone',title:'Marketing & Sales Ops Manager',role:'Decision Maker',sup:'green',notes:"Primary ops/data persona on the eval. Owns CRM (HubSpot) + sales intelligence tools. Helps Ben on 'every single initiative for the sales team.' Measured on revenue and rep activity.",parent:'c1',x:0,y:0},
       {id:'c4',name:'Mika Badyal',title:'CRM Coordinator',role:'Evaluator',sup:'green',notes:"Dan's number two. Same responsibilities as Dan to a lesser extent.",parent:'c3',x:0,y:0},
     ],
@@ -717,7 +719,7 @@ const DEAL_DEFAULTS={
       {t:"Ben (CGO) not yet in the room — Dan and Mika are evaluating but can't buy.",l:'high',s:'Discovery · Jun 24',label:"Economic buyer (Ben) not in the room"},
       {t:"RFP-driven motion — 6sense helps them get on the shortlist before RFPs, but fit is limited for the RFP response process itself.",l:'med',s:'Internal assessment',label:'RFP-driven motion limits fit'},
       {t:"Revenue data gated — can't build ROI model without ADS and closed revenue figures.",l:'high',s:'Discovery call',label:'Revenue data gated — ROI model blocked'},
-      {t:"Price sensitivity: $150K–$300K range got a 'that's a lot' reaction from Dan. Business case must be airtight before pricing escalates.",l:'med',s:'Call 3 · Jun 24',label:"Dan reacted to price — business case must come first"},
+      {t:"Price sensitivity: $150K–$300K range got a 'that is a lot' reaction from Dan. Business case must be airtight before pricing escalates.",l:'med',s:'Call 3 · Jun 24',label:"Dan reacted to price — business case must come first"},
     ],
     uid:10,standalonePos:{}
   },
@@ -728,12 +730,12 @@ const DEAL_DEFAULTS={
     next:'Business case presentation — unblock data trust issue first',
     stage:3,
     qd:[
-      {l:'Pain identified',s:'green',n:'Fixed SQL ceiling — more MQL spend does not produce more SQLs. 4,406 MQLs unworked by sales this year. They are paying more to surface the same real demand buried under more noise.',o:false},
-      {l:'Champion confirmed',s:'amber',n:'Champion not yet fully confirmed — need to identify the right internal sponsor for this deal.',o:false},
-      {l:'Economic buyer engaged',s:'amber',n:'Economic buyer not yet directly engaged.',o:false},
-      {l:'Decision process mapped',s:'amber',n:'Process not fully mapped — need to understand who makes the final call.',o:false},
-      {l:'Metrics agreed',s:'amber',n:'Funnel baseline captured: 9,649 MQLs · 16% MQL→SQL · 28% SQL→CW · $9,703 ASV → ~107% attainment masking the real problem.',o:false},
-      {l:'Close plan aligned',s:'red',n:'No close plan yet. Highest priority is unblocking the data trust / duplication issue.',o:false},
+      {l:'Pain identified',s:'green',n:"Fixed SQL ceiling — more MQL spend does not produce more SQLs. 4,406 MQLs unworked by sales this year. They are paying more to surface the same real demand buried under more noise.",o:false},
+      {l:'Champion confirmed',s:'amber',n:"Champion not yet fully confirmed — need to identify the right internal sponsor for this deal.",o:false},
+      {l:'Economic buyer engaged',s:'amber',n:"Economic buyer not yet directly engaged.",o:false},
+      {l:'Decision process mapped',s:'amber',n:"Process not fully mapped — need to understand who makes the final call.",o:false},
+      {l:'Metrics agreed',s:'amber',n:"Funnel baseline captured: 9,649 MQLs · 16% MQL→SQL · 28% SQL→CW · $9,703 ASV → ~107% attainment masking the real problem.",o:false},
+      {l:'Close plan aligned',s:'red',n:"No close plan yet. Highest priority is unblocking the data trust / duplication issue.",o:false},
     ],
     outs:['Work the 4,406 unworked MQL backlog via AI email without adding headcount','Surface only in-market accounts so sales touches what is worth their time','Lift MQL→SQL from 16% toward 27% target','Prove the fixed SQL ceiling is a targeting problem, not a capacity problem'],
     ctx:{
@@ -743,8 +745,8 @@ const DEAL_DEFAULTS={
       Obstacles:["Sales org doesn't trust marketing data — data trust gap is the #1 blocker","Duplication issue in CRM flagged — 6sense needs to bring a proposed fix","ZoomInfo deeply embedded — displacement requires strong data quality story"]
     },
     cs:[
-      {id:'c1',name:'TBD',title:'Economic Buyer',role:'Economic Buyer',sup:'amber',notes:'Economic buyer not yet identified. Need to map the buying committee.',parent:null,x:0,y:0},
-      {id:'c2',name:'TBD Champion',title:'Marketing / Demand Gen Leader',role:'Champion',sup:'amber',notes:'Champion not yet confirmed. Likely owns the MQL→SQL conversion problem.',parent:'c1',x:0,y:0},
+      {id:'c1',name:'TBD',title:'Economic Buyer',role:'Economic Buyer',sup:'amber',notes:"Economic buyer not yet identified. Need to map the buying committee.",parent:null,x:0,y:0},
+      {id:'c2',name:'TBD Champion',title:'Marketing / Demand Gen Leader',role:'Champion',sup:'amber',notes:"Champion not yet confirmed. Likely owns the MQL→SQL conversion problem.",parent:'c1',x:0,y:0},
     ],
     cl:[
       {g:'Qualify',items:[{t:'Pain formally identified — fixed SQL ceiling + 4,406 unworked MQLs',d:true},{t:'Champion confirmed and engaged',d:false},{t:'Economic buyer identified',d:false},{t:'Economic buyer directly engaged',d:false},{t:'Decision process and criteria mapped',d:false}]},
@@ -768,10 +770,10 @@ const DEAL_DEFAULTS={
     qd:[
       {l:'Pain identified',s:'amber',n:"Getting into deals too late — by the time RFPs arrive competitors are already on the shortlist. ZoomInfo only shows website visitors, not keyword intent. No SDR. Motion is ~90% outbound. Inbound leads are best quality but barely any come in — almost entirely dependent on Google and trade shows.",o:false},
       {l:'Champion confirmed',s:'amber',n:"David is the internal referral — close personal friend of Josh's, has used 6sense before. Said 'let's set something up.' Not confirmed as formal champion yet — Ray (CRO) is the real decision maker.",o:false},
-      {l:'Economic buyer engaged',s:'red',n:"Ray is 'the main guy that's going to make a decision.' Was NOT on this call. David wants to present to Ray after seeing AI email demo. Need to get Ray on a call.",o:false},
-      {l:'Decision process mapped',s:'red',n:'David + team evaluate first, then present to Ray. No formal procurement process discussed. Currently migrating HubSpot → Salesforce.',o:false},
-      {l:'Metrics agreed',s:'red',n:'Team quota = 20 deals/year (5 per rep). ~10 closed so far this year. ~50 accounts managed at various pipeline stages. Sales cycle 9-12 months. Motion is ~90% outbound. No ADS captured yet.',o:false},
-      {l:'Close plan aligned',s:'red',n:'No close plan. Too early. Next step is syncing with David and demoing AI email before Ray gets involved.',o:false},
+      {l:'Economic buyer engaged',s:'red',n:"Ray is 'the main guy that will make a decision.' Was NOT on this call. David wants to present to Ray after seeing AI email demo. Need to get Ray on a call.",o:false},
+      {l:'Decision process mapped',s:'red',n:"David + team evaluate first, then present to Ray. No formal procurement process discussed. Currently migrating HubSpot → Salesforce.",o:false},
+      {l:'Metrics agreed',s:'red',n:"Team quota = 20 deals/year (5 per rep). ~10 closed so far this year. ~50 accounts managed at various pipeline stages. Sales cycle 9-12 months. Motion is ~90% outbound. No ADS captured yet.",o:false},
+      {l:'Close plan aligned',s:'red',n:"No close plan. Too early. Next step is syncing with David and demoing AI email before Ray gets involved.",o:false},
     ],
     outs:[
       'Get in front of deals before RFPs are written — keyword intent on FedRAMP, competitors',
@@ -781,7 +783,7 @@ const DEAL_DEFAULTS={
     ],
     ctx:{
       Goals:[
-        'Get on the shortlist before RFPs are written — currently losing deals before they know they're happening',
+        'Get on the shortlist before RFPs are written — currently losing deals before they know they use happening',
         'Build an outbound prospecting motion without hiring an SDR',
         'Close remaining 10 deals to hit team quota of 20 — currently at 10 closed this year',
       ],
@@ -805,10 +807,10 @@ const DEAL_DEFAULTS={
       ]
     },
     cs:[
-      {id:'c1',name:'Ray',title:'CRO',role:'Economic Buyer',sup:'amber',notes:"CRO. 'The main guy that's going to make a decision whether we do this or not.' Was NOT on the intro call. David wants to present to him after seeing AI email demo. Last name unknown.",parent:null,x:0,y:0},
-      {id:'c2',name:'David',title:'Internal Referral / Champion',role:'Champion',sup:'green',notes:"Close personal friend of Josh's (~10 years). Has used 6sense before. Referred Josh in after team discussed needing help getting in front of deals earlier. Internal champion but needs Ray's approval.",parent:'c1',x:0,y:0},
-      {id:'c3',name:'Cade',title:'Sales Rep',role:'Evaluator',sup:'green',notes:'On the intro call. Positive reaction — excited about keyword intent and seeing intent signals sooner in the buying process.',parent:'c1',x:0,y:0},
-      {id:'c4',name:'Aaron',title:'Sales Rep',role:'Evaluator',sup:'green',notes:'On the intro call. Agreed inbound leads are best quality but few and far between — motion is almost entirely outbound.',parent:'c1',x:0,y:0},
+      {id:'c1',name:'Ray',title:'CRO',role:'Economic Buyer',sup:'amber',notes:"CRO. 'The main guy that will make the final call.' Was NOT on the intro call. David wants to present to him after seeing AI email demo. Last name unknown.",parent:null,x:0,y:0},
+      {id:'c2',name:'David',title:'Internal Referral / Champion',role:'Champion',sup:'green',notes:"Close personal friend of Josh (~10 years). Has used 6sense before. Referred Josh in after team discussed needing help getting in front of deals earlier. Internal champion but needs Ray's approval.",parent:'c1',x:0,y:0},
+      {id:'c3',name:'Cade',title:'Sales Rep',role:'Evaluator',sup:'green',notes:"On the intro call. Positive reaction — excited about keyword intent and seeing intent signals sooner in the buying process.",parent:'c1',x:0,y:0},
+      {id:'c4',name:'Aaron',title:'Sales Rep',role:'Evaluator',sup:'green',notes:"On the intro call. Agreed inbound leads are best quality but few and far between — motion is almost entirely outbound.",parent:'c1',x:0,y:0},
     ],
     cl:[
       {g:'Qualify',items:[
@@ -847,18 +849,18 @@ const DEAL_DEFAULTS={
     next:'Touch 4 pending (Josh holding until Peter follows up) + Ryan outreaching to Keshav',
     stage:1,
     qd:[
-      {l:'Pain identified',s:'amber',n:'On radar via intent data — Orion researching 6sense pages (AI ABM, account targeting, account journey topics). Pain not yet confirmed in conversation.',o:false},
-      {l:'Champion confirmed',s:'red',n:'No champion yet. Peter Antogiovanni (Head of AI Transformation) is primary contact but has not responded after 3 touches.',o:false},
-      {l:'Economic buyer engaged',s:'red',n:'Not yet engaged. Keshav Bangalore (Head of Sales) is second contact — Ryan outreaching.',o:false},
-      {l:'Decision process mapped',s:'red',n:'No meeting yet — process unknown.',o:false},
-      {l:'Metrics agreed',s:'red',n:'No meeting yet.',o:false},
-      {l:'Close plan aligned',s:'red',n:'No meeting yet.',o:false},
+      {l:'Pain identified',s:'amber',n:"On radar via intent data — Orion researching 6sense pages (AI ABM, account targeting, account journey topics). Pain not yet confirmed in conversation.",o:false},
+      {l:'Champion confirmed',s:'red',n:"No champion yet. Peter Antogiovanni (Head of AI Transformation) is primary contact but has not responded after 3 touches.",o:false},
+      {l:'Economic buyer engaged',s:'red',n:"Not yet engaged. Keshav Bangalore (Head of Sales) is second contact — Ryan outreaching.",o:false},
+      {l:'Decision process mapped',s:'red',n:"No meeting yet — process unknown.",o:false},
+      {l:'Metrics agreed',s:'red',n:"No meeting yet.",o:false},
+      {l:'Close plan aligned',s:'red',n:"No meeting yet.",o:false},
     ],
     outs:["Get a first meeting — qualify whether Peter's AI transformation mandate includes a GTM/ABM play",'Confirm if an AI/GTM project is actually active','Understand the buying committee and who else is involved'],
     ctx:{
       Goals:['AI transformation for the growth org — if scoping a GTM/ABM play, 6sense fits directly','Identify which accounts are in-market for AI transformation services'],
       Pressures:['Orion recently hired a Director of GTM with AI transformation mandate','Intent signals showing on 6sense platform — Orion researching AI ABM topics'],
-      Initiatives:['Ryan (Josh\'s manager) outreaching to Keshav Bangalore via LinkedIn + email','Touch 4 to Peter pending — Josh holding until Peter follows up directly'],
+      Initiatives:["Ryan (Josh manager) outreaching to Keshav Bangalore via LinkedIn + email","Touch 4 to Peter pending — Josh holding until Peter follows up directly"],
       Obstacles:['Peter Antogiovanni unresponsive after 3 touches','No meeting yet — all activity is outreach','AI/GTM project scope unconfirmed','S1→CW is long math (40%×23%)']
     },
     cs:[
@@ -879,9 +881,10 @@ const DEAL_DEFAULTS={
   }
 };
 
-// ══════════════════════════════════════════════════════════════
+console.log("DEAL_DEFAULTS defined, starting OPP MANAGER...");
+// ================================================================
 // OPPORTUNITY MANAGER LOGIC
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 let currentDeal=null,oppIsLt=false;
 let oppStage,oppQd,oppOuts,oppCtx,oppCs,oppUid,oppStandalonePos,oppCl,oppRisks,oppSelLvl;
 
@@ -1188,7 +1191,7 @@ document.addEventListener('mouseup',e=>{
 });
 function oppAddContact(){
   const id='c'+(oppUid++);
-  oppCs.push({id,name:'New Contact',title:'Title',role:'Evaluator',sup:'amber',notes:'',parent:null,x:SVG_W*0.75,y:60});
+  oppCs.push({id,name:'New Contact',title:'Title',role:'Evaluator',sup:'amber',notes:"",parent:null,x:SVG_W*0.75,y:60});
   oppStandalonePos[id]={x:SVG_W*0.75,y:60};oppDrawMap();oppSave();
 }
 function oppDeleteContact(id){oppCs=oppCs.filter(c=>c.id!==id);oppCs.forEach(c=>{if(c.parent===id)c.parent=null;});delete oppStandalonePos[id];oppDrawMap();oppSave();}
