@@ -288,6 +288,30 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
     <button class="open-deal-btn" onclick="openDeal('isolved')">Open opportunity manager →</button>
   </div>
 
+  <!-- Project Hosts -->
+  <div class="deal-card">
+    <div class="deal-header">
+      <div><span class="deal-name">Project Hosts</span><span class="deal-sub">· GovCloud / FedRAMP Software</span></div>
+      <span class="stage-badge badge-s1">S1 · NB</span>
+    </div>
+    <div class="deal-grid">
+      <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="ph-acv" value="100000" step="5000"/></div></div>
+      <div><div class="stat-label">Term length</div><select class="term-select" id="ph-term" onchange="updateTerm('ph')"><option value="12" selected>12mo</option><option value="18">18mo</option><option value="24">24mo</option><option value="36">36mo</option></select></div>
+      <div><div class="stat-label">Term mult</div><div class="stat-value" id="ph-mult">1.0×</div></div>
+      <div><div class="stat-label">S1→CW prob</div><div class="stat-value">9%</div></div>
+      <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="ph-wtd">—</div></div>
+    </div>
+    <div class="deal-pills">
+      <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-deal="ph" data-field="pain">~90% outbound motion with no intent data — getting into deals too late, losing to competitors already on shortlist. ZoomInfo only shows website visitors not keyword intent.</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-deal="ph" data-field="outcomes">Get on shortlist before RFPs written · Build outbound motion without SDR · AI email for prospecting</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-deal="ph" data-field="last">Intro demo call Jun 25 — David, Kate, Aaron. Walked through intent platform + AI email.</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-deal="ph" data-field="next">Sync with David today. Demo AI email. Then loop in Ray (decision maker).</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-deal="ph" data-field="close">TBD</div></div>
+    </div>
+    <div class="risks"><strong>Key risks:</strong><div id="ph-risks-tags"></div></div>
+    <button class="open-deal-btn" onclick="openDeal('projecthosts')">Open opportunity manager →</button>
+  </div>
+
   <!-- Orion -->
   <div class="deal-card dimmed">
     <div class="deal-header">
@@ -481,6 +505,7 @@ const DEALS_T=[
   {prefix:'m',aId:'m-acv',wId:'m-wtd',cId:'m-comm',prob:0.23,mult:1.25},
   {prefix:'i',aId:'i-acv',wId:'i-wtd',cId:'i-comm',prob:0.72,mult:1.0},
   {prefix:'o',aId:'o-acv',wId:'o-wtd',cId:null,    prob:0.092,mult:1.0},
+  {prefix:'ph',aId:'ph-acv',wId:'ph-wtd',cId:null,prob:0.092,mult:1.0},
 ];
 function updateTerm(p){
   const mo=parseInt(document.getElementById(p+'-term').value);
@@ -495,7 +520,7 @@ function updateTerm(p){
   saveTracker();
 }
 // Deal keys map
-const DEAL_KEYS={t:'teledyne',m:'mc2',i:'isolved',o:'orion'};
+const DEAL_KEYS={t:'teledyne',m:'mc2',i:'isolved',o:'orion',ph:'projecthosts'};
 
 function renderTrackerRisks(){
   ['t','m','i','o'].forEach(p=>{
@@ -675,7 +700,7 @@ const DEAL_DEFAULTS={
       Goals:['Improve conversion rate on existing $30M inbound pipeline','Get shortlisted before RFPs are written — 95% of winners are on the shortlist','Hit revenue targets with 12 sales reps on new business'],
       Pressures:['84% customer retention rate amplifies cost of every lost RFP','Rep prioritization today = gut instinct by individual salesperson','ZoomInfo limitation: can see who searches for competitors, not which specific competitor'],
       Initiatives:['Phase 1: new business reps only (~12 reps)','Phase 2: account managers in year two (per Dan)','HubSpot CRM · ZoomInfo · ZoomInfo Marketing Cloud · LinkedIn Sales Nav'],
-      Obstacles:['Revenue data gated — needs approval from head of company','Ben (CGO) not yet directly engaged','Price sensitivity: $150K–$300K range got a "that\'s a lot" reaction from Dan','No ADS confirmed yet — need for ROI model']
+      Obstacles:["Revenue data gated — needs approval from head of company","Ben (CGO) not yet directly engaged","Price sensitivity — Dan reacted negatively, business case must be airtight","No ADS confirmed yet — need for ROI model"]
     },
     cs:[
       {id:'c1',name:'Ben (CGO)',title:'Chief Growth Officer',role:'Economic Buyer',sup:'amber',notes:'Likely economic buyer. Dan reports directly to Ben. Ben is aware of the eval. Last name unknown.',parent:null,x:0,y:0},
@@ -734,7 +759,88 @@ const DEAL_DEFAULTS={
     ],
     uid:5,standalonePos:{}
   },
+  projecthosts:{
+    name:'Project Hosts',badge:'S1 — Exploratory',sub:'GovCloud / FedRAMP Software · Josh W.',
+    arr:'$TBD',services:'TBD',close:'TBD',conf:15,
+    last:'Intro demo call — Jun 25. Walked through intent platform + AI email. David referred Josh in.',
+    next:'Sync with David to determine next step. Demo AI email. Then loop in Ray (decision maker).',
+    stage:1,
+    qd:[
+      {l:'Pain identified',s:'amber',n:"Getting into deals too late — by the time RFPs arrive competitors are already on the shortlist. ZoomInfo only shows website visitors, not keyword intent. No SDR. Motion is ~90% outbound. Inbound leads are best quality but barely any come in — almost entirely dependent on Google and trade shows.",o:false},
+      {l:'Champion confirmed',s:'amber',n:"David is the internal referral — close personal friend of Josh's, has used 6sense before. Said 'let's set something up.' Not confirmed as formal champion yet — Ray (CRO) is the real decision maker.",o:false},
+      {l:'Economic buyer engaged',s:'red',n:"Ray is 'the main guy that's going to make a decision.' Was NOT on this call. David wants to present to Ray after seeing AI email demo. Need to get Ray on a call.",o:false},
+      {l:'Decision process mapped',s:'red',n:'David + team evaluate first, then present to Ray. No formal procurement process discussed. Currently migrating HubSpot → Salesforce.',o:false},
+      {l:'Metrics agreed',s:'red',n:'Team quota = 20 deals/year (5 per rep). ~10 closed so far this year. ~50 accounts managed at various pipeline stages. Sales cycle 9-12 months. Motion is ~90% outbound. No ADS captured yet.',o:false},
+      {l:'Close plan aligned',s:'red',n:'No close plan. Too early. Next step is syncing with David and demoing AI email before Ray gets involved.',o:false},
+    ],
+    outs:[
+      'Get in front of deals before RFPs are written — keyword intent on FedRAMP, competitors',
+      'Replace gut-based account prioritization with data-driven targeting',
+      'AI email to build outbound motion without adding SDR headcount',
+      'Get Ray (decision maker) engaged and see the platform',
+    ],
+    ctx:{
+      Goals:[
+        'Get on the shortlist before RFPs are written — currently losing deals before they know they're happening',
+        'Build an outbound prospecting motion without hiring an SDR',
+        'Close remaining 10 deals to hit team quota of 20 — currently at 10 closed this year',
+      ],
+      Pressures:[
+        'Getting outspent on Google Ads — inbound leads declining',
+        'No SDR, lean team — Cade, David, Aaron and one other rep running almost entirely outbound',
+        'Competitors like Knocks are "crushing it" on marketing',
+        'Long sales cycle (9-12 months) makes pipeline management critical',
+      ],
+      Initiatives:[
+        'Migrating HubSpot → Salesforce (in progress)',
+        'Exploring sales engagement platform (Salesloft/Outreach) — not yet in place',
+        'Currently using 1-1 Outlook emails for all outbound',
+        'Ray needs to approve any new tool investment',
+      ],
+      Obstacles:[
+        'Ray not yet engaged — David needs to bring him in after AI email demo',
+        'No budget discussed or confirmed',
+        'ZoomInfo already in stack — displacement or complement conversation needed',
+        'No formal marketing team — outsourced, limited bandwidth',
+      ]
+    },
+    cs:[
+      {id:'c1',name:'Ray',title:'CRO',role:'Economic Buyer',sup:'amber',notes:"CRO. 'The main guy that's going to make a decision whether we do this or not.' Was NOT on the intro call. David wants to present to him after seeing AI email demo. Last name unknown.",parent:null,x:0,y:0},
+      {id:'c2',name:'David',title:'Internal Referral / Champion',role:'Champion',sup:'green',notes:"Close personal friend of Josh's (~10 years). Has used 6sense before. Referred Josh in after team discussed needing help getting in front of deals earlier. Internal champion but needs Ray's approval.",parent:'c1',x:0,y:0},
+      {id:'c3',name:'Cade',title:'Sales Rep',role:'Evaluator',sup:'green',notes:'On the intro call. Positive reaction — excited about keyword intent and seeing intent signals sooner in the buying process.',parent:'c1',x:0,y:0},
+      {id:'c4',name:'Aaron',title:'Sales Rep',role:'Evaluator',sup:'green',notes:'On the intro call. Agreed inbound leads are best quality but few and far between — motion is almost entirely outbound.',parent:'c1',x:0,y:0},
+    ],
+    cl:[
+      {g:'Qualify',items:[
+        {t:'Sync with David — determine next step post intro call',d:false},
+        {t:'Demo AI email to David + team',d:false},
+        {t:'Get Ray on a call — present platform + AI email',d:false},
+        {t:'Pain formally confirmed with Ray',d:false},
+        {t:'Budget conversation initiated',d:false},
+        {t:'ZoomInfo relationship clarified — complement or displace',d:false},
+      ]},
+      {g:'Validate',items:[
+        {t:'Discovery with Ray — understand full buying process',d:false},
+        {t:'Metrics captured — ADS, win rate, pipeline target',d:false},
+        {t:'Business case / ROI model built',d:false},
+        {t:'Demo of keyword intent with FedRAMP/Knocks keywords',d:false},
+      ]},
+      {g:'Close',items:[
+        {t:'Mutual close plan agreed with David + Ray',d:false},
+        {t:'Salesforce integration scoped (post-migration)',d:false},
+        {t:'Legal / procurement engaged',d:false},
+      ]},
+    ],
+    risks:[
+      {t:"Ray was not on the intro call and is the actual decision maker. Deal can't move without him. David needs to bring him in after AI email demo.",l:'high',s:'Intro call · Jun 25',label:'Ray (decision maker) not yet engaged'},
+      {t:"No budget discussed or confirmed. Company is lean — no SDR, outsourced marketing. Tool investment needs Ray's approval.",l:'high',s:'Internal assessment',label:'Budget unknown — needs Ray approval'},
+      {t:"ZoomInfo already in stack. Team said they'd use both but displacement or complement conversation needs to happen formally.",l:'med',s:'Intro call · Jun 25',label:'ZoomInfo in stack — complement vs. displace unclear'},
+      {t:"Sales cycle is 9-12 months and deal is S1. Long-tail math. Don't over-invest before Ray is engaged.",l:'med',s:'Internal assessment',label:'Long sales cycle — S1 is long math'},
+    ],
+    uid:5,standalonePos:{}
+  },
   orion:{
+    name:'Orion',badge:'S1 — Pipe Gen',sub:'AI Transformation · Josh W.',  orion:{
     name:'Orion',badge:'S1 — Pipe Gen',sub:'AI Transformation · Josh W.',
     arr:'$150K',services:'TBD',close:'TBD',conf:15,
     last:'Touch 3 sent to Peter — no reply',
@@ -1185,6 +1291,7 @@ document.addEventListener('blur',e=>{
 },true);
 
 // ── PENDING UPDATES ──
+const pendingUpdatesMap = {};
 async function loadPendingUpdates() {
   const updates = await supaGetPending();
   const card = document.getElementById('pending-card');
@@ -1196,6 +1303,7 @@ async function loadPendingUpdates() {
   card.style.display='block';
   count.textContent = updates.length + ' pending';
   
+  updates.forEach(u => { pendingUpdatesMap[u.id] = u; });
   list.innerHTML = updates.map(u => `
     <div style="padding:10px 0;border-bottom:0.5px solid #e5e3dc;" id="upd-${u.id}">
       <div style="font-size:12px;font-weight:500;margin-bottom:3px;">${u.deal_id.toUpperCase()}</div>
@@ -1213,10 +1321,11 @@ async function loadPendingUpdates() {
     </div>`).join('');
 }
 
-async function approveUpdate(updateId, dealId, proposedData) {
+async function approveUpdate(updateId, dealId) {
+  const update = pendingUpdatesMap[updateId];
+  const proposedData = update ? update.proposed_data : null;
   await supaApproveUpdate(updateId);
-  // Apply the proposed data to the deal in Supabase
-  await supaSave(dealId, proposedData);
+  if(proposedData) await supaSave(dealId, proposedData);
   // Remove from UI
   const el = document.getElementById('upd-'+updateId);
   if(el) el.style.opacity='0.4';
