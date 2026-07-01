@@ -247,6 +247,71 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
   #tracker-view .summary-grid,#tracker-view .deal-grid{grid-template-columns:repeat(2,1fr);}
   #tracker-view{padding:18px 14px 80px;}
 }
+/* ═══════════════ DEAL ROOM ═══════════════ */
+#dealroom{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 38%,#0e2438 0%,#081522 55%,#050d16 100%);color:#e8f0f5;display:flex;flex-direction:column;font-family:system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
+#dealroom.hidden{display:none;}
+.dr-topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;flex-shrink:0;}
+.dr-title{font-size:12px;font-weight:700;letter-spacing:2px;color:#00fff0;text-transform:uppercase;}
+.dr-exit{background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.15);color:#9fb8cc;font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.dr-exit:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.dr-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;}
+.dr-center{display:flex;flex-direction:column;align-items:center;gap:14px;z-index:2;}
+#dr-orb{cursor:pointer;filter:drop-shadow(0 0 40px rgba(0,255,240,0.25));}
+.dr-status{font-size:13px;color:#7a9ab5;letter-spacing:0.3px;min-height:18px;}
+.dr-orbit{position:absolute;width:150px;padding:14px 16px;background:rgba(17,34,54,0.72);border:0.5px solid rgba(0,255,240,0.18);border-radius:14px;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s;z-index:3;}
+.dr-orbit:hover{border-color:rgba(0,255,240,0.55);background:rgba(17,34,54,0.92);transform:scale(1.04);}
+.dr-orbit-lbl{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;}
+.dr-orbit-hint{font-size:10px;color:#5f7d96;text-transform:uppercase;letter-spacing:0.5px;}
+.dr-orbit-tl{top:11%;left:9%;}
+.dr-orbit-tr{top:11%;right:9%;}
+.dr-orbit-bl{bottom:11%;left:9%;}
+.dr-orbit-br{bottom:11%;right:9%;}
+.dr-convo{max-height:200px;overflow-y:auto;padding:0 24px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
+.dr-msg{max-width:74%;font-size:14px;line-height:1.55;padding:11px 15px;border-radius:14px;}
+.dr-msg.user{align-self:flex-end;background:rgba(0,255,240,0.1);border:0.5px solid rgba(0,255,240,0.2);color:#e8f0f5;}
+.dr-msg.bot{align-self:flex-start;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.09);color:#d8e8f0;}
+.dr-msg.thinking{opacity:0.6;font-style:italic;}
+.dr-sysnote{align-self:center;font-size:12px;font-weight:600;color:#2dcb8a;background:rgba(45,203,138,0.1);border:0.5px solid rgba(45,203,138,0.25);border-radius:20px;padding:5px 14px;}
+.dr-inputbar{display:flex;align-items:center;gap:10px;padding:16px 24px 22px;flex-shrink:0;}
+.dr-mic{width:44px;height:44px;border-radius:50%;flex-shrink:0;border:0.5px solid rgba(0,255,240,0.3);background:rgba(0,255,240,0.08);color:#00fff0;font-size:18px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.dr-mic:hover{background:rgba(0,255,240,0.16);}
+.dr-mic.listening{background:#00fff0;color:#081522;animation:dr-pulse 1.2s infinite;}
+@keyframes dr-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,240,0.4);}50%{box-shadow:0 0 0 10px rgba(0,255,240,0);}}
+.dr-text{flex:1;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.13);border-radius:12px;padding:13px 16px;color:#fff;font-size:14px;font-family:inherit;outline:none;}
+.dr-text::placeholder{color:#5f7d96;}
+.dr-text:focus{border-color:rgba(0,255,240,0.4);}
+.dr-send{background:#00fff0;color:#081522;border:none;border-radius:12px;padding:13px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.dr-send:hover{background:#33fff3;}
+.dr-zoom{position:fixed;inset:0;z-index:1100;background:rgba(5,13,22,0.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:40px;}
+.dr-zoom.hidden{display:none;}
+.dr-zoom.dr-zoom-wide .dr-zoom-inner{max-width:1080px;}
+.drmap-leg{display:flex;align-items:center;gap:12px;font-size:12px;color:#b8ccdb;}
+.drleg{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#b8ccdb;}
+.drdot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.drmap-add{background:rgba(0,255,240,0.1);border:0.5px solid rgba(0,255,240,0.3);color:#00fff0;font-size:12px;padding:6px 13px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
+.drmap-add:hover{background:rgba(0,255,240,0.18);}
+.drmap-canvas{background:rgba(255,255,255,0.02);border:0.5px solid rgba(255,255,255,0.06);border-radius:12px;padding:8px;min-height:420px;max-height:60vh;overflow:auto;}
+.drmap-canvas svg{width:100%;min-height:420px;display:block;}
+.dr-zoom-inner{background:#0d1e30;border:0.5px solid rgba(0,255,240,0.2);border-radius:18px;width:100%;max-width:860px;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 20px 80px rgba(0,0,0,0.5);}
+.dr-zoom-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:13px;font-weight:700;letter-spacing:1px;color:#00fff0;text-transform:uppercase;}
+.dr-zoom-close{background:none;border:none;color:#9fb8cc;font-size:18px;cursor:pointer;}
+.dr-zoom-body{padding:22px;overflow-y:auto;}
+/* Reused card styling inside zoom, tuned for dark */
+.dr-zoom-body .drz-card{background:rgba(255,255,255,0.04);border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:3px solid rgba(0,255,240,0.3);}
+.dr-zoom-body .drz-label{font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;}
+.dr-zoom-body .drz-note{font-size:13px;color:#b8ccdb;line-height:1.6;outline:none;}
+.dr-zoom-body .drz-note:focus{background:rgba(255,255,255,0.05);border-radius:6px;}
+.dr-zoom-body .drz-risk{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid rgba(255,255,255,0.07);}
+.dr-zoom-body .drz-cl{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:0.5px solid rgba(255,255,255,0.07);font-size:13px;}
+.dr-zoom-body .drz-done{text-decoration:line-through;opacity:0.55;}
+.dr-zoom-body .drz-del{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.12);color:#7a9ab5;width:22px;height:22px;border-radius:6px;font-size:11px;cursor:pointer;flex-shrink:0;padding:0;line-height:1;}
+.dr-zoom-body .drz-del:hover{background:rgba(224,82,99,0.15);border-color:#e05263;color:#e05263;}
+@media(max-width:640px){
+  .dr-orbit{width:112px;padding:10px 12px;}
+  .dr-orbit-tl,.dr-orbit-bl{left:4%;}
+  .dr-orbit-tr,.dr-orbit-br{right:4%;}
+  #dr-orb{width:220px;height:220px;}
+}
 </style>
 </head>
 <body>
@@ -496,6 +561,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
     <div class="logo">Field <span id="opp-deal-label">opportunity manager</span></div>
     <div class="topbtns">
       <button class="back-btn" onclick="backToTracker()">← Back to tracker</button>
+      <button class="back-btn" onclick="enterDealRoom()" style="border-color:var(--cyan);color:var(--cyan);font-weight:600;">⚡ Strategize</button>
       <div class="tbtn" onclick="oppReset()" style="color:#DC2626;border-color:#DC2626;opacity:0.7;">↺ Reset</div>
     </div>
   </div>
@@ -585,6 +651,61 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
     </div>
   </div>
 </div>
+</div>
+
+<!-- ═══════════════ DEAL ROOM ═══════════════ -->
+<div id="dealroom" class="hidden">
+  <div class="dr-topbar">
+    <div class="dr-title">DEAL ROOM · <span id="dr-deal-name">—</span></div>
+    <button class="dr-exit" onclick="exitDealRoom()">✕ Exit room</button>
+  </div>
+
+  <div class="dr-stage">
+    <!-- Orbiting artifact cards -->
+    <div class="dr-orbit dr-orbit-tl" onclick="drZoom('strat')">
+      <div class="dr-orbit-lbl">Strategic map</div>
+      <div class="dr-orbit-hint">click to zoom</div>
+    </div>
+    <div class="dr-orbit dr-orbit-tr" onclick="drZoom('map')">
+      <div class="dr-orbit-lbl">Relationship map</div>
+      <div class="dr-orbit-hint">click to zoom</div>
+    </div>
+    <div class="dr-orbit dr-orbit-bl" onclick="drZoom('plan')">
+      <div class="dr-orbit-lbl">Close plan</div>
+      <div class="dr-orbit-hint">click to zoom</div>
+    </div>
+    <div class="dr-orbit dr-orbit-br" onclick="drZoom('risk')">
+      <div class="dr-orbit-lbl">Key risks</div>
+      <div class="dr-orbit-hint">click to zoom</div>
+    </div>
+
+    <!-- Center voice orb -->
+    <div class="dr-center">
+      <canvas id="dr-orb" width="320" height="320"></canvas>
+      <div class="dr-status" id="dr-status">Tap the orb to start</div>
+    </div>
+  </div>
+
+  <!-- Conversation strip -->
+  <div class="dr-convo" id="dr-convo"></div>
+
+  <!-- Input bar -->
+  <div class="dr-inputbar">
+    <button class="dr-mic" id="dr-mic" onclick="drToggleMic()" title="Talk">🎙</button>
+    <input type="text" id="dr-input" class="dr-text" placeholder="Talk or type — what do you want to work through?" onkeydown="if(event.key==='Enter')drSend()"/>
+    <button class="dr-send" onclick="drSend()">Send</button>
+  </div>
+
+  <!-- Zoom overlay -->
+  <div id="dr-zoom" class="dr-zoom hidden">
+    <div class="dr-zoom-inner">
+      <div class="dr-zoom-hdr">
+        <span id="dr-zoom-title">—</span>
+        <button class="dr-zoom-close" onclick="drCloseZoom()">✕</button>
+      </div>
+      <div id="dr-zoom-body" class="dr-zoom-body"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1427,7 +1548,7 @@ function oppReset(){
 function oppShow(name){
   ['deal','map','plan','risk'].forEach(t=>document.getElementById('opp-'+t).classList.toggle('hidden',t!==name));
   document.querySelectorAll('#opp-view .tab').forEach((el,i)=>el.classList.toggle('on',['deal','map','plan','risk'][i]===name));
-  if(name==='map')oppDrawMap();
+  if(name==='map'){activeMapSvg='opp-ms';oppDrawMap('opp-ms');}
 }
 
 // Timeline
@@ -1488,7 +1609,7 @@ const SCYC2=['green','amber','red'];
 const ROLES=['Champion','Economic Buyer','Decision Maker','Evaluator','Influencer','Blocker'];
 const NW=130,NH=58,HGAP=22,VGAP=82;
 let SVG_W=640,SVG_H=360;
-let dragId=null,dropTarget=null,dragOffX=0,dragOffY=0,svgEl=null;
+let dragId=null,dropTarget=null,dragOffX=0,dragOffY=0,svgEl=null,activeMapSvg='opp-ms';
 
 function oppChildren(id){return oppCs.filter(c=>c.parent===id);}
 function oppSubtreeW(id){const k=oppChildren(id);if(!k.length)return NW;return Math.max(NW,k.reduce((s,c)=>s+oppSubtreeW(c.id),0)+(k.length-1)*HGAP);}
@@ -1514,7 +1635,11 @@ function oppLayout(){
 }
 function getSVGC(e){const r=svgEl.getBoundingClientRect();return{x:(e.clientX-r.left)*(SVG_W/r.width),y:(e.clientY-r.top)*(SVG_H/r.height)};}
 function oppRenderMap(gId,gX,gY,dT){
-  const tc='#1E293B',mc='#64748B',bg='#F1F5F9';
+  // Dark palette when rendering into the Deal Room, light palette for the tab
+  const darkRoom=(activeMapSvg==='dr-ms');
+  const tc=darkRoom?'#e8f0f5':'#1E293B';
+  const mc=darkRoom?'#5f7d96':'#64748B';
+  const bg=darkRoom?'#12263a':'#F1F5F9';
   let h=`<defs><marker id="ar" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${mc}" opacity="0.45"/></marker></defs>`;
   oppCs.forEach(c=>{
     if(!c.parent)return;
@@ -1539,11 +1664,13 @@ function oppRenderMap(gId,gX,gY,dT){
   svgEl.innerHTML=h;
   svgEl.querySelectorAll('.mn').forEach(n=>{n.addEventListener('mousedown',e=>{dragId=n.dataset.id;const cc=oppCs.find(x=>x.id===dragId);const pos=getSVGC(e);dragOffX=pos.x-cc.x;dragOffY=pos.y-cc.y;e.preventDefault();});});
 }
-function oppDrawMap(){
-  svgEl=document.getElementById('opp-ms');
+function oppDrawMap(svgId){
+  svgEl=document.getElementById(svgId||'opp-ms');
+  if(!svgEl)return;
   const r=svgEl.getBoundingClientRect();SVG_W=r.width>0?Math.round(r.width):640;
   oppLayout();svgEl.setAttribute('viewBox',`0 0 ${SVG_W} ${SVG_H}`);
-  oppRenderMap(null,0,0,null);oppBuildCCs();
+  oppRenderMap(null,0,0,null);
+  if(document.getElementById('opp-ccs'))oppBuildCCs();
 }
 document.addEventListener('mousemove',e=>{
   if(!dragId||!svgEl)return;
@@ -1564,15 +1691,15 @@ document.addEventListener('mouseup',e=>{
     function isDesc(a,d){if(d===a)return true;return oppChildren(a).some(k=>isDesc(k.id,d));}
     if(!isDesc(dragId,dropTarget)){dragged.parent=dropTarget;delete oppStandalonePos[dragId];}
   }else{dragged.parent=null;oppStandalonePos[dragId]={x:gx,y:gy};dragged.x=gx;dragged.y=gy;}
-  dragId=null;dropTarget=null;oppDrawMap();oppSave();
+  dragId=null;dropTarget=null;oppDrawMap(activeMapSvg);oppSave();
 });
 function oppAddContact(){
   const id='c'+(oppUid++);
   oppCs.push({id,name:'New Contact',title:'Title',role:'Evaluator',sup:'amber',notes:"",parent:null,x:SVG_W*0.75,y:60});
-  oppStandalonePos[id]={x:SVG_W*0.75,y:60};oppDrawMap();oppSave();
+  oppStandalonePos[id]={x:SVG_W*0.75,y:60};oppDrawMap(activeMapSvg);oppSave();
 }
-function oppDeleteContact(id){oppCs=oppCs.filter(c=>c.id!==id);oppCs.forEach(c=>{if(c.parent===id)c.parent=null;});delete oppStandalonePos[id];oppDrawMap();oppSave();}
-function oppMakeStandalone(ci){const c=oppCs[ci];c.parent=null;oppStandalonePos[c.id]={x:c.x,y:c.y};oppDrawMap();oppSave();}
+function oppDeleteContact(id){oppCs=oppCs.filter(c=>c.id!==id);oppCs.forEach(c=>{if(c.parent===id)c.parent=null;});delete oppStandalonePos[id];oppDrawMap(activeMapSvg);oppSave();}
+function oppMakeStandalone(ci){const c=oppCs[ci];c.parent=null;oppStandalonePos[c.id]={x:c.x,y:c.y};oppDrawMap(activeMapSvg);oppSave();}
 function oppBuildCCs(){
   document.getElementById('opp-ccs').innerHTML=oppCs.map((c,ci)=>{
     const sc=SM[c.sup],pn=c.parent?oppCs.find(x=>x.id===c.parent)?.name:'—';
@@ -1595,7 +1722,7 @@ function oppBuildCCs(){
   }).join('');
 }
 function oppCycleRole(ci){const c=ROLES.indexOf(oppCs[ci].role);oppCs[ci].role=ROLES[(c+1)%ROLES.length];oppBuildCCs();oppSave();}
-function oppCycleSup(ci){const c=SCYC2.indexOf(oppCs[ci].sup);oppCs[ci].sup=SCYC2[(c+1)%SCYC2.length];oppBuildCCs();oppDrawMap();oppSave();}
+function oppCycleSup(ci){const c=SCYC2.indexOf(oppCs[ci].sup);oppCs[ci].sup=SCYC2[(c+1)%SCYC2.length];oppBuildCCs();oppDrawMap(activeMapSvg);oppSave();}
 
 // Close plan
 const DEFAULT_CLOSE_PLAN=[
@@ -1801,6 +1928,365 @@ async function rejectUpdate(updateId) {
   const el = document.getElementById('upd-'+updateId);
   if(el) el.style.opacity='0.4';
   setTimeout(()=>loadPendingUpdates(), 500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEAL ROOM
+// ═══════════════════════════════════════════════════════════
+
+// ┌─────────────────────────────────────────────────────────┐
+// │ MANAGER PERSONA — ISOLATED BLOCK.                        │
+// │ This is the entire "brain" of the Deal Room agent.      │
+// │ To swap in your custom-built agent later, replace ONLY  │
+// │ the DEAL_ROOM_PERSONA string below. Nothing else changes.│
+// └─────────────────────────────────────────────────────────┘
+const DEAL_ROOM_PERSONA = `You are the user's sales manager in a private deal room. You are sharp, direct, and genuinely in their corner — the kind of manager a strong enterprise AE actually wants: you challenge their thinking hard, name the gap they're dancing around, and ask the uncomfortable question, but you never posture or condescend. You're a thinking partner, not a cheerleader and not a hardass for its own sake.
+
+How you operate:
+- Lead with the single most important thing. Don't inventory the whole deal back at them.
+- Challenge assumptions. If their close date, champion, or budget read looks thin, say so and ask what it's based on.
+- Ask ONE pointed question at a time, not a list. Make them think.
+- When they're vague ("it's going well"), push for specifics — what was said, by whom, what's the evidence.
+- Pressure-test the path to close: who actually signs, what's the compelling event, what could kill it.
+- Be concise. Short paragraphs. This is a conversation, not a memo. No bullet-point dumps unless they ask.
+- No corporate sales jargon, no exclamation points, no "great question." Talk like a real person.
+- You know their world: enterprise ABM sales, 6sense, named-account motion, complex buying committees.
+
+Your goal every session: leave them clearer on the ONE thing that most moves this deal, and honest about the biggest gap.
+
+═══ CAPTURING THINGS TO THE DEAL ═══
+This is a working session, not just talk. When the rep lands on something worth recording — a risk, a next step, or a close-plan action — you help them capture it. But you NEVER write silently and you NEVER write on a half-formed thought. The rhythm is: they say it → you confirm the specifics in ONE natural question → they answer → you write it and say it's done.
+
+You capture three things:
+- A RISK (something that could kill or slow the deal). Confirm severity: high, medium, or low.
+- A NEXT STEP (the rep's immediate next action). Confirm timing if unclear.
+- A CLOSE-PLAN STEP (a milestone on the path to close). Confirm whose action: us, them, or both.
+
+How to write: when — and only when — the rep has confirmed the specifics, include a capture tag on its OWN LINE at the very end of your message, then the front-end records it. Use EXACTLY these formats:
+[[ADD_RISK: <short risk text> | <high|med|low>]]
+[[SET_NEXT: <next step text>]]
+[[ADD_STEP: <close plan step text> | <us|them|both>]]
+
+Rules:
+- Ask the confirming question FIRST, in plain conversation. Only emit the tag in your NEXT message after they answer.
+- One tag per message, max. Keep talking like a human around it — the tag is silent plumbing, the rep won't see it, so still say "done — added that as a medium risk" in your actual words.
+- If they're vague or thinking out loud ("maybe that's a risk, not sure"), do NOT capture. Push them to decide first.
+- You may SUGGEST changes to stage, close date, or ACV, but you canNOT set them — tell the rep to change those themselves. No tags for those.
+- Never invent a capture they didn't agree to.`;
+
+let drRecognition=null, drListening=false, drOrbAnim=null, drOrbEnergy=0, drHistory=[], drThinking=false;
+
+function buildDealContext(){
+  // Snapshot the current deal state for the agent
+  const nm=document.getElementById('opp-name')?.textContent||DEAL_DEFAULTS[currentDeal]?.name||currentDeal;
+  const stageNames={1:'Prospect',2:'Discovery',3:'Demo',4:'Eval',5:'Proposal',6:'Close'};
+  let ctx=`DEAL: ${nm}\nStage: ${stageNames[oppStage]||oppStage}\n\n`;
+  ctx+=`STRATEGIC QUALIFICATION:\n`;
+  (oppStrat||[]).forEach(s=>{ctx+=`- ${s.l} [${s.s}]: ${s.n||'(blank)'}\n`;});
+  ctx+=`\nCOMPETITION:\n- Against: ${oppComp?.against||'?'}\n- Why we win: ${oppComp?.wedge||'?'}\n- Their pushback: ${oppComp?.counter||'?'}\n`;
+  ctx+=`\nTECH STACK: ${oppTech||'?'}\n`;
+  ctx+=`\nKEY RISKS:\n`;
+  (oppRisks||[]).forEach(r=>{ctx+=`- [${r.l}] ${r.t}\n`;});
+  ctx+=`\nCLOSE PLAN:\n`;
+  if(oppCl&&oppCl.length)oppCl.forEach(c=>{ctx+=`- ${c.d?'[done]':'[ ]'} ${c.t} (owner: ${c.owner||'us'})\n`;});
+  else ctx+=`(none yet — below stage 3 or not started)\n`;
+  ctx+=`\nCONTACTS:\n`;
+  (oppCs||[]).forEach(c=>{ctx+=`- ${c.name}, ${c.title} (${c.role})\n`;});
+  return ctx;
+}
+
+async function drCallAgent(userMsg){
+  drHistory.push({role:'user',content:userMsg});
+  drSetThinking(true);
+  const systemPrompt=DEAL_ROOM_PERSONA+`\n\n=== CURRENT DEAL STATE ===\n`+buildDealContext();
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",max_tokens:1000,
+        system:systemPrompt,
+        messages:drHistory.map(m=>({role:m.role,content:m.content}))
+      })
+    });
+    const data=await res.json();
+    let reply="";
+    if(data.content&&Array.isArray(data.content)){
+      reply=data.content.filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+    }
+    if(!reply)reply="(no response — try again)";
+    drHistory.push({role:'assistant',content:reply});
+    drSetThinking(false);
+    // Parse & execute capture tags, then strip them from what's shown
+    const captured=drApplyCaptures(reply);
+    const displayReply=reply.replace(/\[\[(ADD_RISK|SET_NEXT|ADD_STEP):[^\]]*\]\]/g,'').trim();
+    drAddMsg(displayReply||'(done)','bot');
+    if(captured.length){
+      captured.forEach(c=>drAddSystemNote(c));
+      drSyncApp();
+      if(drOpenZoom)drReZoom();
+    }
+  }catch(e){
+    drSetThinking(false);
+    drAddMsg("Couldn't reach the agent. If you're running this on the public GitHub Pages URL, the live agent only works inside Claude for now — that gets fixed in the app rebuild.",'bot');
+  }
+}
+
+// Parse capture tags from an agent reply, perform the writes, return a list of human labels
+function drApplyCaptures(reply){
+  const done=[];
+  let m;
+  const reRisk=/\[\[ADD_RISK:\s*([^|\]]+)\|\s*(high|med|low)\s*\]\]/gi;
+  while((m=reRisk.exec(reply))){
+    const t=m[1].trim(), lvl=m[2].toLowerCase();
+    oppRisks.push({t,l:lvl,s:'Added in deal room',label:t.length>40?t.slice(0,37)+'…':t});
+    done.push(`✓ Added ${lvl.toUpperCase()} risk: "${t}"`);
+  }
+  const reNext=/\[\[SET_NEXT:\s*([^\]]+)\]\]/gi;
+  while((m=reNext.exec(reply))){
+    const t=m[1].trim();
+    const nx=document.getElementById('opp-next');
+    if(nx)nx.textContent=t;
+    // also update the deal default in memory so tracker + needs-you pick it up
+    if(DEAL_DEFAULTS[currentDeal])DEAL_DEFAULTS[currentDeal].next=t;
+    done.push(`✓ Set next step: "${t}"`);
+  }
+  const reStep=/\[\[ADD_STEP:\s*([^|\]]+)\|\s*(us|them|both)\s*\]\]/gi;
+  while((m=reStep.exec(reply))){
+    const t=m[1].trim(), owner=m[2].toLowerCase();
+    if(!Array.isArray(oppCl))oppCl=[];
+    oppCl.push({t,d:false,owner,shared:false});
+    done.push(`✓ Added close-plan step (${owner}): "${t}"`);
+  }
+  if(done.length)oppSave();
+  return done;
+}
+function drAddSystemNote(text){
+  const c=document.getElementById('dr-convo');
+  const d=document.createElement('div');
+  d.className='dr-sysnote';
+  d.textContent=text;
+  c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+function drAddMsg(text,who){
+  const c=document.getElementById('dr-convo');
+  const d=document.createElement('div');
+  d.className='dr-msg '+who;
+  d.textContent=text;
+  c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+function drSetThinking(on){
+  drThinking=on;
+  document.getElementById('dr-status').textContent=on?'Thinking…':'Listening';
+  if(on){drOrbEnergy=0.5;}else{drOrbEnergy=0;}
+}
+
+function drSend(){
+  const inp=document.getElementById('dr-input');
+  const v=inp.value.trim();
+  if(!v||drThinking)return;
+  drAddMsg(v,'user');
+  inp.value='';
+  drCallAgent(v);
+}
+
+// ── Speech to text ──
+function drInitSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('dr-mic').style.display='none';return;}
+  drRecognition=new SR();
+  drRecognition.continuous=false;drRecognition.interimResults=true;drRecognition.lang='en-US';
+  let finalText='';
+  drRecognition.onresult=(e)=>{
+    let interim='';finalText='';
+    for(let i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    document.getElementById('dr-input').value=finalText||interim;
+    drOrbEnergy=Math.min(1,0.4+interim.length/50);
+  };
+  drRecognition.onend=()=>{drListening=false;document.getElementById('dr-mic').classList.remove('listening');document.getElementById('dr-status').textContent='Ready';drOrbEnergy=0;if(document.getElementById('dr-input').value.trim())drSend();};
+  drRecognition.onerror=()=>{drListening=false;document.getElementById('dr-mic').classList.remove('listening');};
+}
+function drToggleMic(){
+  if(!drRecognition){drAddMsg("Voice isn't supported in this browser — type instead.",'bot');return;}
+  if(drListening){drRecognition.stop();return;}
+  drListening=true;
+  document.getElementById('dr-mic').classList.add('listening');
+  document.getElementById('dr-status').textContent='Listening…';
+  try{drRecognition.start();}catch(e){}
+}
+
+// ── Voice orb animation ──
+function drStartOrb(){
+  const cv=document.getElementById('dr-orb');if(!cv)return;
+  const ctx=cv.getContext('2d');const W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    t+=0.02;
+    // decay energy toward idle
+    drOrbEnergy*=0.94;
+    const baseR=68;
+    const rings=3;
+    for(let k=0;k<rings;k++){
+      ctx.beginPath();
+      const pts=90;
+      for(let i=0;i<=pts;i++){
+        const a=(i/pts)*Math.PI*2;
+        const wob=Math.sin(a*4+t*1.6+k*1.3)*(5+drOrbEnergy*22)+Math.sin(a*7-t*2+k)*(3+drOrbEnergy*12);
+        const r=baseR+k*13+wob;
+        const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r;
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+      const alpha=0.5-k*0.13+drOrbEnergy*0.2;
+      ctx.strokeStyle=`rgba(0,255,240,${Math.max(0.06,alpha)})`;
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+    }
+    // core glow
+    const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,baseR);
+    grad.addColorStop(0,`rgba(0,255,240,${0.22+drOrbEnergy*0.3})`);
+    grad.addColorStop(1,'rgba(0,255,240,0)');
+    ctx.fillStyle=grad;
+    ctx.beginPath();ctx.arc(cx,cy,baseR,0,Math.PI*2);ctx.fill();
+    drOrbAnim=requestAnimationFrame(frame);
+  }
+  frame();
+}
+function drStopOrb(){if(drOrbAnim)cancelAnimationFrame(drOrbAnim);drOrbAnim=null;}
+
+// ── Enter / exit ──
+function enterDealRoom(){
+  if(!currentDeal){alert('Open a deal first.');return;}
+  document.getElementById('opp-view').classList.add('hidden');
+  document.getElementById('dealroom').classList.remove('hidden');
+  document.getElementById('dr-deal-name').textContent=DEAL_DEFAULTS[currentDeal]?.name||currentDeal;
+  drHistory=[];
+  document.getElementById('dr-convo').innerHTML='';
+  document.getElementById('dr-status').textContent='Ready — talk or type';
+  drStartOrb();
+  if(!drRecognition)drInitSpeech();
+  // Opening line from the manager
+  setTimeout(()=>{
+    const nm=DEAL_DEFAULTS[currentDeal]?.name||currentDeal;
+    drAddMsg(`Alright — ${nm}. What do you want to work through? Or I can tell you the one thing I'd be worried about.`,'bot');
+    drHistory.push({role:'assistant',content:`Alright — ${nm}. What do you want to work through? Or I can tell you the one thing I'd be worried about.`});
+  },400);
+}
+function exitDealRoom(){
+  drStopOrb();
+  if(drListening&&drRecognition)drRecognition.stop();
+  document.getElementById('dealroom').classList.add('hidden');
+  document.getElementById('opp-view').classList.remove('hidden');
+}
+
+// ── Zoom overlays: render the live deal artifacts, editable ──
+function drZoom(which){
+  drOpenZoom=which;
+  const titles={strat:'Strategic Map',map:'Relationship Map',plan:'Close Plan',risk:'Key Risks'};
+  document.getElementById('dr-zoom-title').textContent=titles[which]||'';
+  const body=document.getElementById('dr-zoom-body');
+  let h='';
+  if(which==='strat'){
+    (oppStrat||[]).forEach((s,i)=>{
+      const col=s.s==='green'?'#2dcb8a':s.s==='amber'?'#f5a623':'#e05263';
+      h+=`<div class="drz-card" style="border-left-color:${col};"><div class="drz-label">${s.l}</div><div class="drz-note" contenteditable="true" data-di="${i}" data-dk="strat" onblur="drEdit(this)">${s.n||''}</div></div>`;
+    });
+  }else if(which==='risk'){
+    h+=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="drmap-add" onclick="drAddRisk()">+ Add risk</button></div>`;
+    (oppRisks||[]).forEach((r,i)=>{
+      const col=r.l==='high'?'#e05263':r.l==='med'?'#f5a623':'#2dcb8a';
+      h+=`<div class="drz-risk">
+        <div onclick="drCycleRiskLvl(${i})" title="Click to change severity" style="color:${col};font-size:10px;font-weight:700;text-transform:uppercase;flex-shrink:0;width:46px;cursor:pointer;">${r.l}</div>
+        <div class="drz-note" contenteditable="true" data-di="${i}" data-dk="risk" onblur="drEdit(this)" style="flex:1;">${r.t}</div>
+        <button class="drz-del" onclick="drDelRisk(${i})" title="Delete">✕</button>
+      </div>`;
+    });
+    if(!(oppRisks||[]).length)h+='<div style="color:#7a9ab5;padding:8px 0;">No risks logged yet. Add one, or just tell the agent.</div>';
+  }else if(which==='plan'){
+    if(oppStage<3){
+      h='<div style="color:#7a9ab5;">Close plan activates at Stage 3. Advance the stage on the Deal Overview, or add steps below anyway.</div>';
+      h+=`<div style="display:flex;justify-content:flex-end;margin-top:10px;"><button class="drmap-add" onclick="drAddPlan()">+ Add step</button></div>`;
+    }else{
+      h+=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="drmap-add" onclick="drAddPlan()">+ Add step</button></div>`;
+      (oppCl||[]).forEach((c,i)=>{
+        const oc={us:'#00fff0',them:'#f5a623',both:'#2dcb8a'}[c.owner||'us'];
+        h+=`<div class="drz-cl">
+          <span onclick="drTogPlan(${i})" title="Toggle done" style="color:${c.d?'#2dcb8a':'#5f7d96'};cursor:pointer;flex-shrink:0;">${c.d?'✓':'○'}</span>
+          <div class="drz-note ${c.d?'drz-done':''}" contenteditable="true" data-di="${i}" data-dk="plan" onblur="drEdit(this)" style="flex:1;">${c.t}</div>
+          <span onclick="drCyclePlanOwner(${i})" title="Whose action" style="font-size:10px;color:${oc};flex-shrink:0;cursor:pointer;font-weight:600;">${(c.owner||'us').toUpperCase()}</span>
+          <button class="drz-del" onclick="drDelPlan(${i})" title="Delete">✕</button>
+        </div>`;
+      });
+      if(!(oppCl||[]).length)h+='<div style="color:#7a9ab5;padding:8px 0;">No steps yet. Add one, or talk it through with the agent.</div>';
+    }
+  }else if(which==='map'){
+    // Render the REAL interactive map into the room — same drag/hierarchy engine
+    body.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="drmap-leg">
+          <span style="color:#7a9ab5;font-size:11px;">Support:</span>
+          <span class="drleg"><span class="drdot" style="background:#2dcb8a;"></span>For us</span>
+          <span class="drleg"><span class="drdot" style="background:#f5a623;"></span>Neutral</span>
+          <span class="drleg"><span class="drdot" style="background:#e05263;"></span>Against</span>
+          <span style="color:#5f7d96;font-size:11px;margin-left:4px;">— — influence · drag to reparent</span>
+        </div>
+        <button class="drmap-add" onclick="oppAddContact()">+ Add contact</button>
+      </div>
+      <div class="drmap-canvas"><svg id="dr-ms" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div style="margin-top:8px;font-size:11px;color:#5f7d96;">Drop onto a contact to set as their manager · drop onto empty space to make standalone</div>`;
+    // Point the map engine at the room's SVG and draw
+    activeMapSvg='dr-ms';
+    setTimeout(()=>oppDrawMap('dr-ms'),60);
+    document.getElementById('dr-zoom').classList.remove('hidden');
+    document.getElementById('dr-zoom').classList.add('dr-zoom-wide');
+    return;
+  }
+  body.innerHTML=h;
+  document.getElementById('dr-zoom').classList.remove('hidden');
+}
+function drCloseZoom(){
+  const z=document.getElementById('dr-zoom');
+  z.classList.add('hidden');
+  z.classList.remove('dr-zoom-wide');
+  activeMapSvg='opp-ms'; // hand the map engine back to the tab
+  drOpenZoom=null;
+}
+function drEdit(el){
+  const i=+el.dataset.di, k=el.dataset.dk, val=el.textContent.trim();
+  if(k==='strat'&&oppStrat[i])oppStrat[i].n=val;
+  else if(k==='risk'&&oppRisks[i])oppRisks[i].t=val;
+  else if(k==='plan'&&oppCl[i])oppCl[i].t=val;
+  oppSave();
+  drSyncApp();
+}
+// Track which zoom is open so we can re-render after an edit
+let drOpenZoom=null;
+function drReZoom(){if(drOpenZoom)drZoom(drOpenZoom);}
+// Risk controls
+const DR_LVLS=['high','med','low'];
+function drAddRisk(){oppRisks.push({t:'New risk — click to edit',l:'med',s:'Added in deal room',label:'New risk'});oppSave();drSyncApp();drReZoom();}
+function drDelRisk(i){oppRisks.splice(i,1);oppSave();drSyncApp();drReZoom();}
+function drCycleRiskLvl(i){const c=DR_LVLS.indexOf(oppRisks[i].l);oppRisks[i].l=DR_LVLS[(c+1)%3];oppSave();drSyncApp();drReZoom();}
+// Close-plan controls
+const DR_OWN=['us','them','both'];
+function drAddPlan(){oppCl.push({t:'New step — click to edit',d:false,owner:'us',shared:false});oppSave();drSyncApp();drReZoom();}
+function drDelPlan(i){oppCl.splice(i,1);oppSave();drSyncApp();drReZoom();}
+function drTogPlan(i){oppCl[i].d=!oppCl[i].d;oppSave();drSyncApp();drReZoom();}
+function drCyclePlanOwner(i){const c=DR_OWN.indexOf(oppCl[i].owner||'us');oppCl[i].owner=DR_OWN[(c+1)%3];oppSave();drSyncApp();drReZoom();}
+// Push room edits back into the app views if they're mounted
+function drSyncApp(){
+  try{
+    if(typeof oppBuildRiskAll==='function'&&document.getElementById('opp-rl'))oppBuildRiskAll();
+    if(typeof oppBuildCL==='function'&&document.getElementById('opp-cl'))oppBuildCL();
+    if(typeof oppBuildStrat==='function'&&document.getElementById('opp-qual'))oppBuildStrat();
+    if(typeof renderTrackerRisks==='function')renderTrackerRisks();
+    if(typeof renderQualScores==='function')renderQualScores();
+  }catch(e){}
 }
 
 // ── INIT ──
