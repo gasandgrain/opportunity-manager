@@ -84,7 +84,8 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
 #tracker-view .ny-group-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
 #tracker-view .ny-item{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border-lt);}
 #tracker-view .ny-item:last-child{border-bottom:none;}
-#tracker-view .ny-date{font-size:12px;font-weight:700;color:#1d4ed8;flex-shrink:0;width:62px;}
+#tracker-view .ny-date{font-size:12px;font-weight:700;color:#1d4ed8;flex-shrink:0;width:76px;display:flex;flex-direction:column;line-height:1.25;}
+#tracker-view .ny-rel{font-size:10px;font-weight:600;color:var(--text-secondary);opacity:0.85;}
 #tracker-view .ny-deal{font-size:13px;font-weight:600;flex-shrink:0;min-width:96px;}
 #tracker-view .ny-step{font-size:13px;color:var(--text-secondary);flex:1;line-height:1.4;}
 #tracker-view .ny-stale{font-size:10px;color:var(--text-secondary);opacity:0.65;flex-shrink:0;font-style:italic;}
@@ -304,7 +305,7 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
       <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="t" data-field="pain">No visibility into data center builds — losing RFPs before they know they are happening</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="t" data-field="outcomes">Get on shortlist before RFPs written · Expand to all 5 AIS verticals</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="t" data-field="last">Call 3 — pricing + implementation overview with Sarah</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="t" data-field="next">Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="t" data-field="next">Prep hard for Kyle call (Jul 10/11). Get Sarah to share the org structure before the call.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="t" data-field="close">Jul 10–11</div></div>
     </div>
     <div class="risks"><strong>Key risks:</strong><div id="t-risks-tags"></div></div>
@@ -315,21 +316,21 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
   <div class="deal-card">
     <div class="deal-header">
       <div><span class="deal-name">MC-2</span><span class="deal-sub">· Brand experience / MCH Group</span></div>
-      <span class="stage-badge badge-s2">S2 · NB</span>
+      <span class="stage-badge badge-s2">S3 · NB</span>
     </div>
     <div class="deal-grid">
       <div><div class="stat-label">ACV (edit)</div><div class="acv-wrap"><span class="acv-prefix">$</span><input type="number" class="acv-input" id="m-acv" value="150000" step="5000"/></div></div>
       <div><div class="stat-label">Term length</div><select class="term-select" id="m-term" onchange="updateTerm('m')"><option value="12">12mo</option><option value="18">18mo</option><option value="24" selected>24mo</option><option value="36">36mo</option></select></div>
       <div><div class="stat-label">Term mult</div><div class="stat-value" id="m-mult">1.25×</div></div>
-      <div><div class="stat-label">S2→CW prob</div><div class="stat-value">23%</div></div>
+      <div><div class="stat-label">S3→CW prob</div><div class="stat-value">23%</div></div>
       <div><div class="stat-label">Wtd ACV</div><div class="stat-value" id="m-wtd">—</div></div>
     </div>
     <div class="comm-row"><div class="stat-label">Commission impact (if closed, <span id="m-term-lbl">24mo</span>)</div><div class="stat-value" id="m-comm" style="color:#16a34a">—</div></div>
     <div class="deal-pills">
       <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="m" data-field="pain">Losing RFPs before they know they are happening — 20% win rate on $30M inbound pipeline</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="m" data-field="outcomes">Improve win rate · Get on shortlist before RFPs written · Data-driven rep prioritization</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="m" data-field="last">Discovery call 3 — Jun 24 with Dan, Mika, Rebecca</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="m" data-field="next">Deep demo Jun 30, 11:30am ET — Dan, Mika, Rebecca, Steve Bentley</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="m" data-field="last">Deep demo — Jun 30 with Dan, Mika, Rebecca, Steve Bentley</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="m" data-field="next">Sent email to VP Enablement + VP Sales — awaiting reply. Follow up tomorrow AM if no response today.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="m" data-field="close">TBD</div></div>
     </div>
     <div class="risks"><strong>Key risks:</strong><div id="m-risks-tags"></div></div>
@@ -355,8 +356,8 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
       <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="i" data-field="pain">Fixed SQL ceiling — 4,406 MQLs unworked. Paying more for same real demand buried in noise.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="i" data-field="outcomes">Work unworked MQL backlog without headcount · Lift MQL→SQL from 16% toward 27%</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="i" data-field="last">Discovery complete — funnel data captured</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="i" data-field="next">Business case presentation — unblock data trust issue first</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="i" data-field="close">TBD</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="i" data-field="next">Jul 7 call — re-align on procurement. Have full buy-in from Will; need to get Danielle in front of us + convince Will to set that call up.</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="i" data-field="close">Jul 7</div></div>
     </div>
     <div class="risks"><strong>Key risks:</strong><div id="i-risks-tags"></div></div>
     <div style="margin:10px 0 0;"><span class="qual-score" id="i-qual" onclick="toggleQualPop(event,'i')"></span></div>
@@ -404,8 +405,8 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
     <div class="deal-pills">
       <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="o" data-field="pain">Unknown — no meeting yet. Intent signals suggest AI GTM / ABM scoping.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="o" data-field="outcomes">TBD — get first meeting to qualify</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="o" data-field="last">Touch 3 sent to Peter — no reply</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="o" data-field="next">Touch 4 pending + Ryan outreaching to Keshav</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="o" data-field="last">Peter replied — moving slower, no internal visibility yet</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="o" data-field="next">Follow up tomorrow AM. Peter said it's moving slower — he doesn't have visibility yet.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="o" data-field="close">TBD</div></div>
     </div>
     <div class="risks"><strong>Key risks:</strong><div id="o-risks-tags"></div></div>
@@ -429,8 +430,8 @@ body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh;-webkit-fon
       <div class="deal-pill"><div class="deal-pill-label">Pain</div><div class="deal-pill-val" contenteditable="true" data-ph="Core pain..." data-deal="ir" data-field="pain">Accounts not converting to partnerships fast enough — RTM-driven, no digital signal layer. Conversion + targeting problem, not volume.</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Measurable outcomes</div><div class="deal-pill-val" contenteditable="true" data-ph="Outcomes..." data-deal="ir" data-field="outcomes">Close ~$128M growth gap · Get warm on MCT accounts before Philips · Match message to buyer persona</div></div>
       <div class="deal-pill"><div class="deal-pill-label">Last step</div><div class="deal-pill-val" contenteditable="true" data-ph="Last step..." data-deal="ir" data-field="last">Discovery call 1 — Jul 1 with Bethanie Swank</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="ir" data-field="next">Follow-up call — Tue Jul 7, 9am–12pm MST window</div></div>
-      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="ir" data-field="close">TBD</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Next step</div><div class="deal-pill-val" contenteditable="true" data-ph="Next step..." data-deal="ir" data-field="next">Call scheduled — Tue Jul 7, 10am PST with Bethanie</div></div>
+      <div class="deal-pill"><div class="deal-pill-label">Close date</div><div class="deal-pill-val" contenteditable="true" data-ph="Close date..." data-deal="ir" data-field="close">Jul 7</div></div>
     </div>
     <div class="risks"><strong>Key risks:</strong><div id="ir-risks-tags"></div></div>
     <div style="margin:10px 0 0;"><span class="qual-score" id="ir-qual" onclick="toggleQualPop(event,'ir')"></span></div>
@@ -617,6 +618,9 @@ async function supaRejectUpdate(id){
 // TRACKER LOGIC
 // ================================================================
 const QUOTA=444092,PCR=0.2526,LS_TRACKER='fy27-deal-tracker-acvs';
+// Anchor for relative next-step phrases ("follow up tomorrow") on deals that
+// haven't been edited in-app yet. This is when the current default notes were authored.
+const CONTENT_AUTHORED_DATE='2026-07-01T09:00:00';
 function fmtT(n){if(!isFinite(n))return'-';const a=Math.abs(n),s=n<0?'-':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return s+'$'+Math.round(a/1e3)+'K';return s+'$'+Math.round(a).toLocaleString();}
 const TERM_MULTS={12:1.0,18:1.0,24:1.25,36:1.5};
 const DEALS_T=[
@@ -697,9 +701,44 @@ document.addEventListener('click',()=>{document.querySelectorAll('.qual-score.op
 // ── Needs you widget ──
 function parseCloseDate(s){
   if(!s)return null;
+  if(/^\s*(tbd|—|-)?\s*$/i.test(s))return null;
+  // Strip time-of-day noise (e.g. "3PM", "6AM", "10am PST") so we don't misparse
+  const cleaned=s.toLowerCase().replace(/\d{1,2}\s*(am|pm)\b/g,' ').replace(/\b(pst|pdt|est|edt|utc|uk|et|ct|mt|mst|mdt)\b/g,' ');
   const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-  const m=s.toLowerCase().match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*(\d{1,2})/);
+  const m=cleaned.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*(\d{1,2})/);
   if(m){const yr=new Date().getFullYear();const d=new Date(yr,months[m[1]],parseInt(m[2]));if(d<new Date(Date.now()-86400000*30))d.setFullYear(yr+1);return d;}
+  return null;
+}
+// Resolve a relative phrase ("follow up tomorrow", "in 3 days", "next Monday")
+// into a REAL date, anchored to `anchor` (when the note was written) so it locks
+// and doesn't slide forward every time the app opens.
+function resolveRelativeDate(text, anchor){
+  if(!text)return null;
+  const t=text.toLowerCase();
+  const base=anchor?new Date(anchor):new Date();
+  base.setHours(9,0,0,0); // normalize to morning
+  const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+  // "in N days" / "N days"
+  let m=t.match(/\bin\s+(\d{1,2})\s+days?\b/)||t.match(/\b(\d{1,2})\s+days?\b/);
+  if(m)return addDays(base,parseInt(m[1]));
+  // day-after-tomorrow
+  if(/\bday after tomorrow\b/.test(t))return addDays(base,2);
+  // tomorrow
+  if(/\btomorrow\b/.test(t))return addDays(base,1);
+  // today / this morning / this afternoon / EOD / end of day
+  if(/\btoday\b|\bthis (morning|afternoon|evening)\b|\beod\b|\bend of day\b/.test(t))return new Date(base);
+  // next week
+  if(/\bnext week\b/.test(t))return addDays(base,7);
+  // this/next weekday (mon..sun)
+  const wd={sunday:0,monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,mon:1,tue:2,tues:2,wed:3,thu:4,thur:4,thurs:4,fri:5,sat:6,sun:0};
+  m=t.match(/\b(?:next\s+|this\s+)?(sunday|monday|tuesday|wednesday|thursday|friday|saturday|mon|tues?|wed|thur?s?|fri|sat|sun)\b/);
+  if(m){
+    const target=wd[m[1]];
+    let diff=(target-base.getDay()+7)%7;
+    if(diff===0)diff=7; // "monday" from a monday = next monday
+    if(/\bnext\s/.test(m[0])&&diff<7)diff+=0; // 'next' already handled by min 1-week via diff
+    return addDays(base,diff);
+  }
   return null;
 }
 function getDealLastUpdated(dealKey){
@@ -730,10 +769,19 @@ function renderNeedsYou(){
       if(raw){const v=JSON.parse(raw);if(v.pills&&v.pills[p]){if(v.pills[p].next)next=v.pills[p].next;if(v.pills[p].close)closeStr=v.pills[p].close;}}
     }catch(e){}
     if(!next)return;
-    const dt=parseCloseDate(closeStr);
     const lu=getDealLastUpdated(dealKey);
+    // Date priority: explicit close date → relative phrase in next-step (anchored to when note was written)
+    let dt=parseCloseDate(closeStr);
+    let dateFromPhrase=false;
+    if(!dt){
+      // Anchor the relative phrase to the note's write time: the deal's lastUpdated,
+      // or the content-authored date if it was never edited in-app.
+      const anchor=lu||new Date(CONTENT_AUTHORED_DATE);
+      const rel=resolveRelativeDate(next,anchor);
+      if(rel){dt=rel;dateFromPhrase=true;}
+    }
     const staleDays=lu?Math.round((Date.now()-lu)/86400000):999;
-    items.push({deal:def.name,step:next,date:dt,dateStr:closeStr,lastUpdated:lu,staleDays,dealKey:p});
+    items.push({deal:def.name,step:next,date:dt,dateStr:closeStr,dateFromPhrase,lastUpdated:lu,staleDays,dealKey:p});
   });
   if(!items.length){body.innerHTML='<div style="font-size:13px;color:var(--text-secondary);">No next steps logged.</div>';return;}
 
@@ -742,9 +790,9 @@ function renderNeedsYou(){
   const dueSoon=[],stuck=[],onTrack=[];
   items.forEach(it=>{
     const days=it.date?Math.round((it.date-now)/86400000):null;
-    if(days!==null && days<=7){it._days=days;dueSoon.push(it);}
-    else if(it.staleDays>=14){stuck.push(it);}
-    else onTrack.push(it);
+    if(days!==null && days<=14){it._days=days;dueSoon.push(it);}       // upcoming commitment within 2 weeks
+    else if(it.staleDays>=14 && days===null){stuck.push(it);}          // no date AND not touched in 2+ weeks = truly stale
+    else onTrack.push(it);                                              // dateless-but-active, or dated further out
   });
   dueSoon.sort((a,b)=>a._days-b._days);
   stuck.sort((a,b)=>b.staleDays-a.staleDays);
@@ -752,7 +800,12 @@ function renderNeedsYou(){
   const fmtDate=(it)=>{
     if(it.date){
       const days=Math.round((it.date-now)/86400000);
-      return days<0?'Overdue':days===0?'Today':days<=7?`${days}d`:(it.dateStr||it.date.toLocaleDateString([],{month:'short',day:'numeric'}));
+      const cal=it.date.toLocaleDateString([],{month:'short',day:'numeric'}); // e.g. "Jul 2"
+      if(days<0)return `<span style="color:#dc2626;">${cal}</span><span class="ny-rel">${Math.abs(days)}d overdue</span>`;
+      if(days===0)return `<span>${cal}</span><span class="ny-rel">Today</span>`;
+      if(days===1)return `<span>${cal}</span><span class="ny-rel">Tomorrow</span>`;
+      if(days<=14)return `<span>${cal}</span><span class="ny-rel">${days}d</span>`;
+      return `<span>${cal}</span>`;
     }
     return it.dateStr&&it.dateStr!=='TBD'?it.dateStr:'—';
   };
@@ -765,13 +818,13 @@ function renderNeedsYou(){
 
   let h='';
   if(dueSoon.length){
-    h+=`<div class="ny-group"><div class="ny-group-lbl" style="color:#dc2626;">⏱ Due this week</div>${dueSoon.map(it=>row(it,it._days<0?'#dc2626':'#1d4ed8')).join('')}</div>`;
+    h+=`<div class="ny-group"><div class="ny-group-lbl" style="color:#dc2626;">⏱ Upcoming — dated</div>${dueSoon.map(it=>row(it,it._days<0?'#dc2626':'#1d4ed8')).join('')}</div>`;
+  }
+  if(onTrack.length){
+    h+=`<div class="ny-group"><div class="ny-group-lbl" style="color:#1d4ed8;">▸ Active — no date set</div>${onTrack.map(it=>row(it,null)).join('')}</div>`;
   }
   if(stuck.length){
     h+=`<div class="ny-group"><div class="ny-group-lbl" style="color:#b45309;">⚠ Going stale</div>${stuck.map(it=>row(it,'#b45309')).join('')}</div>`;
-  }
-  if(onTrack.length){
-    h+=`<div class="ny-group"><div class="ny-group-lbl" style="color:var(--text-secondary);">On track</div>${onTrack.map(it=>row(it,null)).join('')}</div>`;
   }
   body.innerHTML=h;
 }
@@ -902,12 +955,27 @@ function saveTracker(){
   document.getElementById('last-saved').textContent=now;
 }
 async function loadTracker(){
+  // One-time content refresh: if stored content version is behind, clear stale saved pills
+  // so refreshed default next-steps/close-dates take effect. Manual edits re-save at current version.
+  const CONTENT_VERSION='2026-07-01b';
+  try{
+    if(localStorage.getItem('field-content-version')!==CONTENT_VERSION){
+      // wipe saved pill overrides (both local + the pills embedded in tracker blob)
+      localStorage.removeItem('field-tracker-pills');
+      const raw=localStorage.getItem(LS_TRACKER);
+      if(raw){const v=JSON.parse(raw);delete v.pills;localStorage.setItem(LS_TRACKER,JSON.stringify(v));}
+      // also clear remote pills so this device re-seeds from defaults
+      try{const rem=await supaLoad('tracker');if(rem&&rem.pills){delete rem.pills;await supaSaveTracker(rem);}}catch(e){}
+      localStorage.setItem('field-content-version',CONTENT_VERSION);
+      window._contentFlushed=true;
+    }
+  }catch(e){}
   // Try Supabase first, fall back to localStorage
   try {
     const remote = await supaLoad('tracker');
     if(remote) {
       DEALS_T.forEach(d=>{if(remote[d.prefix]!==undefined)document.getElementById(d.aId).value=remote[d.prefix];});
-      if(remote.pills) loadTrackerPills(remote.pills);
+      if(remote.pills && !window._contentFlushed) loadTrackerPills(remote.pills);
       // Restore term selectors
       ['t','m','i','o','ph','ir','sk'].forEach(p=>{
         const termEl=document.getElementById(p+'-term');
@@ -921,10 +989,10 @@ async function loadTracker(){
     if(raw){
       const v=JSON.parse(raw);
       DEALS_T.forEach(d=>{if(v[d.prefix]!==undefined)document.getElementById(d.aId).value=v[d.prefix];});
-      if(v.pills) loadTrackerPills(v.pills);
+      if(v.pills && !window._contentFlushed) loadTrackerPills(v.pills);
     }
     const pillRaw=localStorage.getItem('field-tracker-pills');
-    if(pillRaw) loadTrackerPills(JSON.parse(pillRaw));
+    if(pillRaw && !window._contentFlushed) loadTrackerPills(JSON.parse(pillRaw));
   }catch(e){}
   updateTracker();
 }
@@ -938,7 +1006,7 @@ const DEAL_DEFAULTS={
     name:'Teledyne FLIR',badge:'Active Eval',sub:'Thermal Imaging & Sensing · Enterprise · Josh W.',
     arr:'$280K',services:'$65K',close:'Jul 10–11',conf:35,
     last:'Call 3 — pricing + implementation overview with Sarah',
-    next:'Kyle McKinney call — Jul 10/11, 3PM UK / 6AM PST',
+    next:'Prep hard for Kyle call (Jul 10/11). Get Sarah to share the org structure before the call.',close:'Jul 10-11',
     stage:3,
     strat:[
       {l:'What is the goal?',s:'amber',n:"Generate qualified pipeline in the data center vertical and stop losing RFPs to competitors already on the shortlist. Phase 1 = data center (~10 sellers), expand to all 5 AIS verticals if it proves out. No hard revenue target captured yet — needs to come from David.",o:false,type:'prose',score:true},
@@ -977,11 +1045,11 @@ const DEAL_DEFAULTS={
     uid:10,standalonePos:{}
   },
   mc2:{
-    name:'MC-2',badge:'Active Eval',sub:'Brand Experience · MCH Group · Josh W.',
+    name:'MC-2',badge:'S3 — Active Eval',sub:'Brand Experience · MCH Group · Josh W.',
     arr:'$150K',services:'TBD',close:'TBD',conf:25,
-    last:'Deep demo booked Jun 30 with Dan, Mika, Rebecca + Steve Bentley',
-    next:'Deep demo Jun 30, 11:30am ET — Dan, Mika, Rebecca, Steve',
-    stage:2,
+    last:'Deep demo — Jun 30 with Dan, Mika, Rebecca, Steve Bentley',
+    next:'Sent email to VP Enablement + VP Sales — awaiting reply. Follow up tomorrow AM if no response today.',
+    stage:3,
     strat:[
       {l:'What is the goal?',s:'amber',n:"Improve win rate on the existing $30M inbound pipeline — they currently close ~$6M (~20% win rate). The opportunity is conversion, not more pipeline. Get shortlisted before RFPs are written (95% of winners are on the shortlist; 77% who are #1 win). No formal revenue target captured yet.",o:false,type:'prose',score:true},
       {l:'Pain Identified + Agreed On',s:'green',n:"$30M inbound pipeline, ~$6M closed (~20% win rate). They feel late to the party by the time RFPs arrive and don't know who they're bidding against. Rebecca + Dan both agree conversion is the priority.",o:false,type:'prose',score:true},
@@ -1013,7 +1081,7 @@ const DEAL_DEFAULTS={
     name:'iSolved',badge:'Active Eval — S4',sub:'HCM / Payroll SaaS · Enterprise · Josh W.',
     arr:'$60K',services:'TBD',close:'TBD',conf:72,
     last:'Discovery complete — funnel data captured',
-    next:'Business case presentation — unblock data trust issue first',
+    next:'Jul 7 call — re-align on procurement. Full buy-in from Will; need Danielle in front of us + convince Will to set that call up.',close:'Jul 7',
     stage:3,
     strat:[
       {l:'What is the goal?',s:'green',n:"Hit revenue targets without adding SDR headcount and lift MQL→SQL from 16% toward the 27% target. Current funnel: 9,649 MQLs · 16% MQL→SQL · 28% SQL→CW · $9,703 ASV → ~107% attainment that masks the real problem. The unlock is working 4,406 unworked MQLs without more people.",o:false,type:'prose',score:true},
@@ -1090,8 +1158,8 @@ const DEAL_DEFAULTS={
   orion:{
     name:'Orion',badge:'S1 — Pipe Gen',sub:'AI Transformation · Josh W.',
     arr:'$150K',services:'TBD',close:'TBD',conf:15,
-    last:'Touch 3 sent to Peter — no reply',
-    next:'Touch 4 pending (Josh holding until Peter follows up) + Ryan outreaching to Keshav',
+    last:'Peter replied — moving slower, no internal visibility yet',
+    next:"Follow up tomorrow AM. Peter said it's moving slower — he doesn't have visibility yet.",
     stage:1,
     strat:[
       {l:'What is the goal?',s:'red',n:"Unknown — no meeting yet. Hypothesis: if Peter is scoping an AI transformation / GTM play for the growth org, 6sense fits directly. Need a first meeting to confirm there's an actual goal and project, not just research.",o:false,type:'prose',score:true},
@@ -1121,7 +1189,7 @@ const DEAL_DEFAULTS={
     name:'iRhythm',badge:'S1 — Active Eval',sub:'Digital Health / Cardiac · Josh W.',
     arr:'$200K',services:'TBD',close:'TBD',conf:20,
     last:'Discovery call 1 — Jul 1 with Bethanie Swank',
-    next:'Follow-up call — Tue Jul 7, 9am–12pm MST window (confirm exact time)',
+    next:'Call scheduled — Tue Jul 7, 10am PST with Bethanie',close:'Jul 7',
     stage:1,
     strat:[
       {l:'What is the goal?',s:'amber',n:"Close the ~$128M 2026 growth gap ($747M → ~$875M guide). Bethanie confirmed it's a conversion + targeting problem, not top-of-funnel volume. Two motions: expand volume in existing accounts + land net-new. Split between the two not yet confirmed — ask on call 2.",o:false,type:'prose',score:true},
@@ -1753,6 +1821,22 @@ maybeShowTrackerHint();
 try{if(localStorage.getItem('field-needsyou-collapsed')==='1')document.getElementById('needs-you').classList.add('collapsed');}catch(e){}
 setTimeout(loadPendingUpdates, 2000);
 window.addEventListener('resize',()=>{if(svgEl&&!document.getElementById('opp-map').classList.contains('hidden'))oppDrawMap();});
+
+// ── Keep dates live: re-render the daily brief when the tab regains focus or the day rolls over ──
+let _lastRenderDay=new Date().toDateString();
+function refreshLiveDates(){
+  const today=new Date().toDateString();
+  // only the tracker (not while inside a deal) and only if elements exist
+  if(document.getElementById('tracker-view') && !document.getElementById('tracker-view').classList.contains('hidden')){
+    renderNeedsYou();
+    renderCoachCard();
+  }
+  _lastRenderDay=today;
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLiveDates();});
+window.addEventListener('focus',refreshLiveDates);
+// Check every 5 minutes in case it's left open across midnight
+setInterval(()=>{if(new Date().toDateString()!==_lastRenderDay)refreshLiveDates();},300000);
 </script>
 </body>
 </html>
